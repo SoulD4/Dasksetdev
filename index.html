@@ -1478,7 +1478,70 @@ root.render(<App/>);
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script>
 (function(){
-  function initFirebase(){
+  // ---- Helpers b64 ----
+  function b64ToJson(b64){
+    try{ return JSON.parse(decodeURIComponent(atob(b64).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join(''))); }catch(e){ return null; }
+  }
+  function jsonToB64(obj){
+    try{ return btoa(encodeURIComponent(JSON.stringify(obj)).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p))); }catch(e){ return ''; }
+  }
+
+  // ---- Handle ?id= param (share link) ----
+  async function handleIdParam(){
+    try{
+      var url = new URL(location.href);
+      var id = url.searchParams.get('id');
+      if(!id) return;
+      if(!window._db) return;
+      var snap = await window._db.collection('fichas').doc(id).get();
+      if(!snap.exists) return;
+      var data = snap.data() || {};
+      var payload = { name: data.name || data.title || "Importada", byDay: data.byDay || data.Semana || data.semana || {} };
+      window.history.replaceState({}, '', location.pathname);
+      window.__pendingImport = payload;
+      window.dispatchEvent(new CustomEvent('darkset:import', { detail: payload }));
+    }catch(e){ console.warn('handleIdParam error', e); }
+  }
+
+  // ---- Shorten share link via Firestore ----
+  var replacedOnce = false;
+  async function fireStoreShorten(){
+    try{
+      if(replacedOnce) return;
+      var inp = document.getElementById('share-link');
+      if(!inp) return;
+      var val = inp.value || '';
+      var imp = null;
+      if(val.includes('?import=')) imp = (new URL(val, location.href)).searchParams.get('import');
+      if(!imp) return;
+      var qb = document.getElementById('qr-box');
+      if(qb) qb.innerHTML = '<div style="padding:6px;font-size:12px;opacity:.8">Gerando link curto…</div>';
+      inp.value = 'gerando…';
+      if(!window._db) return;
+      var obj = b64ToJson(imp);
+      if(!obj || !obj.byDay) return;
+      var docRef = await window._db.collection('fichas').add(Object.assign({}, obj, { ts: Date.now() }));
+      var shortUrl = location.origin + '/?id=' + docRef.id;
+      inp.value = shortUrl;
+      if(qb && window.QRCode){ qb.innerHTML=''; new QRCode(qb, { text: shortUrl, width: 196, height: 196 }); }
+      replacedOnce = true;
+    }catch(e){ console.warn('fireStoreShorten error', e); }
+  }
+
+  // ---- MutationObserver para o modal de compartilhamento ----
+  var mo = new MutationObserver(function(){
+    if(document.getElementById('share-link')) fireStoreShorten();
+  });
+
+  // ---- Init Firebase com retry ----
+  var initAttempts = 0;
+  function tryInitFirebase(){
+    initAttempts++;
+    if(typeof firebase === 'undefined'){
+      if(initAttempts < 20) setTimeout(tryInitFirebase, 300);
+      else console.warn('Firebase SDK não carregou após várias tentativas');
+      return;
+    }
     try{
       var firebaseConfig = {
         apiKey: "AIzaSyB3bu3XercwmnlV0jdaldoXvd5gnHfj0GU",
@@ -1489,8 +1552,7 @@ root.render(<App/>);
         appId: "1:354165019689:web:dc458f0a61e26e6289f838",
         measurementId: "G-PVJ7QJ0T7F"
       };
-      if (typeof firebase === 'undefined') { console.warn('Firebase SDK não carregou'); return; }
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+      if(!firebase.apps.length) firebase.initializeApp(firebaseConfig);
       window._db   = firebase.firestore();
       window._auth = firebase.auth();
     }catch(e){ console.warn('Firebase init failed', e); return; }
@@ -1533,26 +1595,12 @@ root.render(<App/>);
       auth.onAuthStateChanged(async function(user){
         try{
           if(user){
-            var info = {
-              uid: user.uid,
-              email: user.email || null,
-              displayName: user.displayName || null,
-              photoURL: user.photoURL || null,
-              lastLogin: Date.now()
-            };
+            var info = { uid: user.uid, email: user.email||null, displayName: user.displayName||null, photoURL: user.photoURL||null, lastLogin: Date.now() };
             localStorage.setItem('darkset.user', JSON.stringify(info));
-            try{
-              if(db) await db.collection('users').doc(user.uid).set({
-                email: info.email, name: info.displayName,
-                photoURL: info.photoURL, updatedAt: Date.now()
-              }, { merge: true });
-            }catch(_){}
+            try{ if(db) await db.collection('users').doc(user.uid).set({ email: info.email, name: info.displayName, photoURL: info.photoURL, updatedAt: Date.now() }, { merge: true }); }catch(_){}
             try{
               var prefs = JSON.parse(localStorage.getItem('darkset.v3.prefs')||'{}');
-              if(info.displayName && !prefs.name){
-                prefs.name = info.displayName;
-                localStorage.setItem('darkset.v3.prefs', JSON.stringify(prefs));
-              }
+              if(info.displayName && !prefs.name){ prefs.name = info.displayName; localStorage.setItem('darkset.v3.prefs', JSON.stringify(prefs)); }
             }catch(_){}
             if(window.closeAuthModal) closeAuthModal();
           } else {
@@ -1563,89 +1611,15 @@ root.render(<App/>);
 
       auth.getRedirectResult().catch(function(){});
     }catch(e){ console.warn('DSAuth init error', e); }
+
+    // Inicia observadores após Firebase pronto
+    mo.observe(document.getElementById('root') || document.body, { subtree: true, childList: true });
+    handleIdParam();
+    fireStoreShorten();
   }
 
-  // Garante que os SDKs já carregaram antes de inicializar
-  if(document.readyState === 'loading'){
-    document.addEventListener('DOMContentLoaded', initFirebase);
-  } else {
-    initFirebase();
-  }
-})();
-
-  // ---- Helpers ----
-  function b64ToJson(b64){
-    try {
-      return JSON.parse(decodeURIComponent(atob(b64).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')));
-    } catch(e){ return null; }
-  }
-  function jsonToB64(obj){
-    try {
-      return btoa(encodeURIComponent(JSON.stringify(obj)).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)));
-    } catch(e){ return ''; }
-  }
-
-  // ---- Handle open with ?id=... ----
-  async function handleIdParam(){ 
-    try{ 
-      var url = new URL(location.href);
-      var id = url.searchParams.get('id');
-      if(!id) return;
-      if(!window._db) return console.warn('Firestore not ready');
-      var snap = await window._db.collection('fichas').doc(id).get();
-      if(!snap.exists) return console.warn('share id not found');
-      var data = snap.data() || {};
-      var payload = { name: data.name || data.title || "Importada", byDay: data.byDay || data.Semana || data.semana || {} };
-      // Limpa a URL sem redirecionar (evita 404 no Netlify)
-      window.history.replaceState({}, '', location.pathname);
-      // Dispara o import diretamente via evento customizado
-      window.__pendingImport = payload;
-      window.dispatchEvent(new CustomEvent('darkset:import', { detail: payload }));
-    }catch(e){ console.warn('handleIdParam error', e); }
-  }
-
-  // ---- Observe Share modal and replace long link with short Firestore link ----
-  var replacedOnce = false;
-  async function fireStoreShorten(){ 
-    try{ 
-      if(replacedOnce) return;
-      var inp = document.getElementById('share-link');
-      if(!inp) return;
-      var qb  = document.getElementById('qr-box');
-      var val = inp.value || '';
-
-      // If the app still wrote a long ?import=..., we convert it transparently
-      var imp = null;
-      if(val.includes('?import=')){ 
-        imp = (new URL(val, location.href)).searchParams.get('import');
-      }
-      // If nothing to shorten yet, bail
-      if(!imp) return;
-
-      if(qb) qb.innerHTML = '<div style="padding:6px;font-size:12px;opacity:.8">Gerando link curto…</div>';
-      inp.value = 'gerando…';
-
-      if(!window._db) return; // keep fallback visual
-
-      var obj = b64ToJson(imp);
-      if(!obj || !obj.byDay) return;
-
-      var docRef = await window._db.collection('fichas').add(Object.assign({}, obj, { ts: Date.now() }));
-      var shortUrl = location.origin + '/?id=' + docRef.id;
-
-      inp.value = shortUrl;
-      if(qb && window.QRCode){ qb.innerHTML=''; new QRCode(qb, { text: shortUrl, width: 196, height: 196 }); }
-      replacedOnce = true;
-    }catch(e){ console.warn('fireStoreShorten error', e); }
-  }
-
-  // Observe only the root element for share modal appearance - more targeted than document-wide
-  var mo = new MutationObserver(function(){
-    if(document.getElementById('share-link')) fireStoreShorten();
-  });
-  mo.observe(document.getElementById('root') || document.body, { subtree: true, childList: true });
-
-  document.addEventListener('DOMContentLoaded', function(){ handleIdParam(); fireStoreShorten(); });
+  // Inicia com pequeno delay para garantir que os SDKs externos carregaram
+  setTimeout(tryInitFirebase, 100);
 })();
 </script>
 
