@@ -117,7 +117,8 @@ const DAYS=["Segunda","Terça","Quarta","Quinta","Sexta","Sábado","Domingo"];
 
 // ---------- Data (88+ com ajustes de taxonomia) ----------
 let exid=1;
-const E=(name,primary,subgroup,equipment,difficulty="intermediário")=>({id:exid++,name,primary,subgroup,equipment,difficulty,media:{type:"gif",srcGif:null,thumb:null}});
+const E=(name,primary,subgroup,equipment,difficulty="intermediário",unilateral=false)=>({id:exid++,name,primary,subgroup,equipment,difficulty,unilateral,media:{type:"gif",srcGif:null,thumb:null}});
+const U=(name,primary,subgroup,equipment,difficulty="intermediário")=>E(name,primary,subgroup,equipment,difficulty,true);
 const EXS=[
   // Peito
   E("Supino reto barra","Peito","Peitoral Medial","Barra"),
@@ -134,14 +135,14 @@ const EXS=[
 
   // Ombro
   E("Desenvolvimento barra","Ombro","Frontal","Barra"),
-  E("Desenvolvimento halter","Ombro","Frontal","Halteres"),
+  U("Desenvolvimento halter","Ombro","Frontal","Halteres"),
   E("Desenvolvimento máquina","Ombro","Frontal","Máquina","iniciante"),
-  E("Elevação lateral halter","Ombro","Lateral","Halteres","iniciante"),
-  E("Elevação lateral polia","Ombro","Lateral","Cabo/Crossover","iniciante"),
-  E("Elevação frontal halteres","Ombro","Frontal","Halteres","iniciante"),
+  U("Elevação lateral halter","Ombro","Lateral","Halteres","iniciante"),
+  U("Elevação lateral polia","Ombro","Lateral","Cabo/Crossover","iniciante"),
+  U("Elevação frontal halteres","Ombro","Frontal","Halteres","iniciante"),
   E("Face Pull (corda)","Ombro","Posterior","Cabo/Crossover","iniciante"),
   E("Crucifixo inverso máquina","Ombro","Posterior","Máquina","iniciante"),
-  E("Crucifixo inverso polia","Ombro","Posterior","Cabo/Crossover","iniciante"),
+  U("Crucifixo inverso polia","Ombro","Posterior","Cabo/Crossover","iniciante"),
   // Trapézio Superior (sem subgrupo "trapézio" extra)
   E("Remada Alta Barra","Trapézio","Superior","Barra"),
 
@@ -153,59 +154,59 @@ const EXS=[
   E("Barra fixa","Costas","Dorsal (Lats)","Peso corporal","avançado"),
   E("Remada curvada barra","Costas","Romboides/Trapézio Médio","Barra"),
   E("Remada Articulada","Costas","Romboides/Trapézio Médio","Máquina"),
-  E("Puxada alta unilateral","Costas","Dorsal (Lats)","Cabo/Crossover"),
+  U("Puxada alta unilateral","Costas","Dorsal (Lats)","Cabo/Crossover"),
   E("Remada baixa polia","Costas","Romboides/Trapézio Médio","Cabo/Crossover"),
   E("Remada baixa aberta polia","Costas","Romboides/Trapézio Médio","Cabo/Crossover"),
   E("Puxada alta aberta","Costas","Dorsal (Lats)","Cabo/Crossover"),
   E("Puxada triângulo","Costas","Dorsal (Lats)","Cabo/Crossover"),
   E("Pulldown","Costas","Dorsal (Lats)","Cabo/Crossover","iniciante"),
-  E("Remada baixa unilateral","Costas","Romboides/Trapézio Médio","Cabo/Crossover"),
+  U("Remada baixa unilateral","Costas","Romboides/Trapézio Médio","Cabo/Crossover"),
   E("Remada cavalinho","Costas","Romboides/Trapézio Médio","Barra"),
-  E("Remada serrote","Costas","Romboides", "Halteres","iniciante"),
+  U("Remada serrote","Costas","Romboides", "Halteres","iniciante"),
   E("Hiperextensão lombar","Lombar","Lombar","Peso corporal","iniciante"),
 
   // Bíceps
   E("Rosca direta barra","Bíceps","Bíceps Braquial","Barra"),
   E("Rosca direta halteres","Bíceps","Bíceps Braquial","Halteres"),
-  E("Rosca alternada halter","Bíceps","Bíceps Braquial","Halteres"),
-  E("Rosca alternada sentada","Bíceps","Bíceps Braquial","Halteres"),
+  U("Rosca alternada halter","Bíceps","Bíceps Braquial","Halteres"),
+  U("Rosca alternada sentada","Bíceps","Bíceps Braquial","Halteres"),
   E("Rosca martelo halteres","Bíceps","Braquiorradial","Halteres"),
   E("Rosca martelo corda","Bíceps","Braquiorradial","Cabo/Crossover"),
   E("Rosca Scott máquina","Bíceps","Bíceps Braquial","Máquina","iniciante"),
-  E("Rosca 45°","Bíceps","Bíceps Braquial","Halteres"),
+  U("Rosca 45°","Bíceps","Bíceps Braquial","Halteres"),
 
   // Tríceps
   E("Tríceps testa barra W","Tríceps","Cabeça Longa","Barra"),
   E("Tríceps testa halter","Tríceps","Cabeça Longa","Halteres"),
-  E("Tríceps Francês halter","Tríceps","Cabeça Longa","Halteres"),
-  E("Tríceps Francês polia","Tríceps","Cabeça Longa","Cabo/Crossover"),
+  U("Tríceps Francês halter","Tríceps","Cabeça Longa","Halteres"),
+  U("Tríceps Francês polia","Tríceps","Cabeça Longa","Cabo/Crossover"),
   E("Tríceps pulley corda","Tríceps","Cabeça Lateral","Cabo/Crossover","iniciante"),
   E("Mergulho no banco","Tríceps","Paralelas","Peso corporal","iniciante"),
 
   // Quadríceps (sem subgrupos)
   E("Agachamento livre","Quadríceps","", "Barra","avançado"),
   E("Agachamento sumô halteres","Quadríceps","", "Halteres"),
-  E("Agachamento búlgaro","Quadríceps","", "Halteres","avançado"),
+  U("Agachamento búlgaro","Quadríceps","", "Halteres","avançado"),
   E("Leg press 45°","Quadríceps","", "Máquina"),
-  E("Leg 180° unilateral","Quadríceps","", "Máquina"),
+  U("Leg 180° unilateral","Quadríceps","", "Máquina"),
   E("Cadeira extensora","Quadríceps","", "Máquina","iniciante"),
-  E("Cadeira extensora unilateral","Quadríceps","", "Máquina","iniciante"),
-  E("Passada avançada halteres","Quadríceps","", "Halteres"),
+  U("Cadeira extensora unilateral","Quadríceps","", "Máquina","iniciante"),
+  U("Passada avançada halteres","Quadríceps","", "Halteres"),
 
   // Posterior de Coxa (sem subgrupos)
   E("Mesa flexora","Posterior de Coxa","", "Máquina","iniciante"),
   E("Mesa flexora deitada","Posterior de Coxa","", "Máquina","iniciante"),
   E("Cadeira flexora","Posterior de Coxa","", "Máquina","iniciante"),
-  E("Cadeira flexora unilateral","Posterior de Coxa","", "Máquina"),
-  E("Flexora unilateral em pé","Posterior de Coxa","", "Máquina"),
+  U("Cadeira flexora unilateral","Posterior de Coxa","", "Máquina"),
+  U("Flexora unilateral em pé","Posterior de Coxa","", "Máquina"),
   E("Stiff","Posterior de Coxa","", "Barra"),
   E("Stiff com halteres","Posterior de Coxa","", "Halteres"),
   E("Levantamento Terra","Posterior de Coxa","", "Barra"),
 
   // Glúteo (com porções)
   E("Elevação pélvica com barra","Glúteo","Glúteo Máximo","Barra"),
-  E("Extensão de quadril no cabo","Glúteo","Glúteo Máximo","Cabo/Crossover","iniciante"),
-  E("Glúteo Crossover Polia","Glúteo","Glúteo Máximo","Cabo/Crossover","iniciante"),
+  U("Extensão de quadril no cabo","Glúteo","Glúteo Máximo","Cabo/Crossover","iniciante"),
+  U("Glúteo Crossover Polia","Glúteo","Glúteo Máximo","Cabo/Crossover","iniciante"),
 
   // Panturrilha
   E("Panturrilha em pé maquina","Panturrilha","Gastrocnêmio","Máquina","iniciante"),
@@ -387,8 +388,11 @@ const Home=({goto,plans,history,prefs})=>{
       </Card>
       <Card title="Perfil rápido">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="text-2xl">{prefs.avatar}</div>
+          <div className="flex items-center gap-3">
+            {prefs.avatarUrl
+              ? <img src={prefs.avatarUrl} className="w-10 h-10 rounded-full border border-borderDark object-cover" alt="avatar"/>
+              : <div className="text-2xl">{prefs.avatar||'💀'}</div>
+            }
             <div className="text-sm text-textSub">{prefs.name || "Sem nome"}</div>
           </div>
           <Button onClick={()=>goto('profile')} variant="ghost">Editar perfil</Button>
@@ -1072,11 +1076,11 @@ const History=({history, setHistory, prefs})=>{
     </div>
   );
 };
-// Profile (local)
-
+// Profile
 const Profile=({prefs,setPrefs})=>{
   const [name,setName]=useState(prefs.name);
   const [avatar,setAvatar]=useState(prefs.avatar);
+  const [avatarUrl,setAvatarUrl]=useState(prefs.avatarUrl||null);
   const [unit,setUnit]=useState(prefs.unit);
   const [vibrate,setVibrate]=useState(prefs.vibrate);
   const [goal,setGoal]=useState(prefs.weeklyGoal);
@@ -1084,17 +1088,66 @@ const Profile=({prefs,setPrefs})=>{
   const [timerPreset,setTimerPreset]=useState(Number(prefs.timerPreset||60));
   const [rir,setRir]=useState(typeof prefs.rirDefault==="number"? prefs.rirDefault : 2);
   const [chartsPremium,setChartsPremium]=useState(!!prefs.chartsPremium);
-  const dirty = (name!==prefs.name) || (avatar!==prefs.avatar) || (unit!==prefs.unit) || (vibrate!==prefs.vibrate) || (goal!==prefs.weeklyGoal) || ((showTimer)!==(prefs.showTimer!==false)) || ((Number(timerPreset||0))!==(Number(prefs.timerPreset||60))) || ((Number(rir))!==(Number((typeof prefs.rirDefault==="number"? prefs.rirDefault : 2)))) || (chartsPremium!==!!prefs.chartsPremium);
+  const [uploading,setUploading]=useState(false);
+  const [uploadErr,setUploadErr]=useState(null);
+  const fileRef=useRef(null);
+
+  const dirty = (name!==prefs.name)||(avatar!==prefs.avatar)||(avatarUrl!==(prefs.avatarUrl||null))||(unit!==prefs.unit)||(vibrate!==prefs.vibrate)||(goal!==prefs.weeklyGoal)||((showTimer)!==(prefs.showTimer!==false))||((Number(timerPreset||0))!==(Number(prefs.timerPreset||60)))||((Number(rir))!==(Number((typeof prefs.rirDefault==="number"? prefs.rirDefault : 2))))||(chartsPremium!==!!prefs.chartsPremium);
+
+  const handlePhotoChange = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    if(!file.type.startsWith('image/')){ setUploadErr('Selecione uma imagem.'); return; }
+    if(file.size > 5*1024*1024){ setUploadErr('Imagem muito grande (máx 5MB).'); return; }
+    setUploadErr(null);
+    setUploading(true);
+    try{
+      // Verifica se Firebase Storage está disponível
+      if(!window.firebase || !firebase.storage){
+        setUploadErr('Firebase Storage não disponível. Tente recarregar.');
+        setUploading(false); return;
+      }
+      const user = JSON.parse(localStorage.getItem('darkset.user')||'null');
+      if(!user){ setUploadErr('Faça login para enviar foto.'); setUploading(false); return; }
+      const ext = file.name.split('.').pop() || 'jpg';
+      const path = `avatars/${user.uid}/avatar.${ext}`;
+      const ref = firebase.storage().ref(path);
+      await ref.put(file);
+      const url = await ref.getDownloadURL();
+      setAvatarUrl(url);
+      setAvatar(''); // limpa emoji ao usar foto
+    }catch(err){
+      setUploadErr('Erro ao enviar foto: ' + (err.message||''));
+    }finally{ setUploading(false); }
+  };
+
+  const displayImg = avatarUrl || (prefs.avatarUrl||null);
 
   return (
     <div className="grid gap-4">
       <Card title="Perfil">
         <div className="grid gap-3">
           <div className="flex flex-wrap items-center gap-3">
-            <div className="text-4xl">{avatar}</div>
-            <input className="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full sm:w-auto" placeholder="Seu nome" value={name} onChange={e=>setName(e.target.value)}/>
-            <input className="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full sm:w-24" placeholder="Emoji" value={avatar} onChange={e=>setAvatar(e.target.value)}/>
+            {/* Avatar: foto ou emoji */}
+            <div className="relative">
+              {displayImg
+                ? <img src={displayImg} className="w-16 h-16 rounded-full border-2 border-borderDark object-cover" alt="avatar"/>
+                : <div className="w-16 h-16 rounded-full border-2 border-borderDark bg-black/30 flex items-center justify-center text-4xl">{avatar||'💀'}</div>
+              }
+              <button
+                onClick={()=>fileRef.current && fileRef.current.click()}
+                className="absolute bottom-0 right-0 bg-accent rounded-full w-6 h-6 flex items-center justify-center text-white text-xs border-2 border-bgDark"
+                title="Trocar foto"
+              >✎</button>
+              <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={handlePhotoChange}/>
+            </div>
+            <div className="flex-1 grid gap-2">
+              <input className="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Seu nome" value={name} onChange={e=>setName(e.target.value)}/>
+              <input className="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Emoji (opcional)" value={avatar} onChange={e=>{setAvatar(e.target.value); if(e.target.value) setAvatarUrl(null);}}/>
+            </div>
           </div>
+          {uploading && <div className="text-xs text-textSub">Enviando foto…</div>}
+          {uploadErr && <div className="text-xs text-red-400">{uploadErr}</div>}
           <div className="flex flex-wrap items-center gap-3">
             <label>Unidade:</label>
             <select className="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full sm:w-auto" value={unit} onChange={e=>setUnit(e.target.value)}>
@@ -1134,11 +1187,8 @@ const Profile=({prefs,setPrefs})=>{
             <Switch checked={chartsPremium} onChange={setChartsPremium}/>
             <span className="text-xs text-textSub">Habilita o botão "Gráficos" no Histórico.</span>
           </div>
-          <div><Button variant="accent" disabled={!dirty} onClick={()=>setPrefs({name,avatar,unit,vibrate,weeklyGoal:goal,showTimer,timerPreset,rirDefault:rir,chartsPremium})}>Salvar perfil</Button></div>
+          <div><Button variant="accent" disabled={!dirty||uploading} onClick={()=>setPrefs({name,avatar,avatarUrl,unit,vibrate,weeklyGoal:goal,showTimer,timerPreset,rirDefault:rir,chartsPremium})}>Salvar perfil</Button></div>
         </div>
-      </Card>
-      <Card>
-        <div className="text-sm text-textSub">Fotos da galeria e pack de avatares ficam pro V4 (estrutura já preparada).</div>
       </Card>
     </div>
   );
@@ -1269,6 +1319,26 @@ root.render(<App/>);
       </div>
       <div class="charts-canvas-wrap"><canvas id="chartsCanvas" height="260"></canvas></div>
       <div id="chartsEmpty" class="charts-empty">Sem dados para o filtro selecionado.</div>
+      <div id="chartsSummary" style="display:none;margin-top:12px;display:none">
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px">
+          <div style="background:#0e0e12;border:1px solid #1f2024;border-radius:10px;padding:10px 12px">
+            <div style="font-size:11px;opacity:.7;margin-bottom:2px">Variação</div>
+            <div id="sumDelta" style="font-size:18px;font-weight:700">—</div>
+          </div>
+          <div style="background:#0e0e12;border:1px solid #1f2024;border-radius:10px;padding:10px 12px">
+            <div style="font-size:11px;opacity:.7;margin-bottom:2px">Volume total</div>
+            <div id="sumVol" style="font-size:18px;font-weight:700">—</div>
+          </div>
+          <div style="background:#0e0e12;border:1px solid #1f2024;border-radius:10px;padding:10px 12px">
+            <div style="font-size:11px;opacity:.7;margin-bottom:2px">Séries</div>
+            <div id="sumSets" style="font-size:18px;font-weight:700">—</div>
+          </div>
+          <div style="background:#0e0e12;border:1px solid #1f2024;border-radius:10px;padding:10px 12px">
+            <div style="font-size:11px;opacity:.7;margin-bottom:2px">Repetições</div>
+            <div id="sumReps" style="font-size:18px;font-weight:700">—</div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -1283,12 +1353,11 @@ root.render(<App/>);
   const num = (v)=>{ const n=parseFloat(String(v).replace(',', '.')); return isFinite(n)?n:0; };
   const tOf = (iso)=> +new Date(iso+"T00:00:00");
 
-  function primaryOf(name){
-    try{
-      const meta = (window.EXS||[]).find(e=> e && e.name && e.name.toLowerCase()===String(name).toLowerCase());
-      return meta? meta.primary : null;
-    }catch(e){ return null; }
+  function metaOf(name){
+    return (window.EXS||[]).find(e=> e && e.name && e.name.toLowerCase()===String(name).toLowerCase()) || null;
   }
+  function primaryOf(name){ const m=metaOf(name); return m? m.primary : null; }
+  function isUnilateral(name){ const m=metaOf(name); return m? !!m.unilateral : false; }
 
   function listSubjects(hist, type){
     const set = new Set();
@@ -1306,9 +1375,9 @@ root.render(<App/>);
     return Array.from(set).sort((a,b)=> a.localeCompare(b));
   }
 
-  function weekStart(d){ // Monday as start
+  function weekStart(d){
     const dt = new Date(d);
-    const day = (dt.getDay()+6)%7; // 0..6 where 0=Mon
+    const day = (dt.getDay()+6)%7;
     dt.setDate(dt.getDate()-day);
     dt.setHours(0,0,0,0);
     return dt;
@@ -1320,9 +1389,19 @@ root.render(<App/>);
   }
   function fmtISO(d){ return d.toISOString().slice(0,10); }
 
+  // Calcula moving average (janela de 3 pontos)
+  function movingAvg(data, window=3){
+    return data.map((_, i)=>{
+      const start = Math.max(0, i - Math.floor(window/2));
+      const end   = Math.min(data.length, start + window);
+      const slice = data.slice(start, end);
+      return slice.reduce((a,b)=>a+b,0) / slice.length;
+    });
+  }
+
   function buildAgg(hist, type, subject, rangeDays){
     const since = (rangeDays && rangeDays!=='all') ? (Date.now() - Number(rangeDays)*dayMs) : 0;
-    const dayMap = new Map(); // iso -> {iie,volume,sets,reps}
+    const dayMap = new Map();
 
     for(const [iso, obj] of Object.entries(hist)){
       const t = tOf(iso); if(since && t < since) continue;
@@ -1334,11 +1413,14 @@ root.render(<App/>);
         if(type==='exercise' && en.name !== subject) continue;
         if(type==='muscle'){ const p=primaryOf(en.name); if(p!==subject) continue; }
 
+        // Fator unilateral: exercícios de 1 lado × 2 para equivaler ao bilateral
+        const uFactor = isUnilateral(en.name) ? 2 : 1;
+
         for(const s of en.sets){
           const r=num(s.r), w=num(s.w);
           if(r<=0) continue;
           const rw = (s.rir in RIR_W) ? RIR_W[s.rir] : (RIR_W[String(s.rir)] ?? 0.90);
-          const vol = (w>0 ? w*r : r);
+          const vol = (w>0 ? w*r : r) * uFactor;
           const iie = vol * rw / 1000.0;
 
           let acc = dayMap.get(iso);
@@ -1348,59 +1430,96 @@ root.render(<App/>);
       }
     }
 
-    // Exercício: diário (mantido). Músculo e Ficha: semanal (média do IIE).
+    // Exercício: diário
     if(type==='exercise'){
       const labels = Array.from(dayMap.keys()).sort((a,b)=> a.localeCompare(b));
       const series = labels.map(d=> dayMap.get(d));
       const tot = series.reduce((o,s)=>({iie:o.iie+s.iie, vol:o.vol+s.volume, sets:o.sets+s.sets, reps:o.reps+s.reps}), {iie:0,vol:0,sets:0,reps:0});
       const delta = (series.length>1)? Math.round(((series.at(-1).iie - series[0].iie)/Math.max(1e-6, series[0].iie))*100) : 0;
-      window.__chartsWeekTitles = null; // reset
+      window.__chartsWeekTitles = null;
       return { labels: labels.map(toBR), series, tot, delta };
     }
 
-    // Agrupamento semanal para muscle/plan
-    const wkMap = new Map(); // wsISO -> {sumIie, days, volume, sets, reps, ws, we}
+    // Agrupamento semanal com SOMA (não média) para músculo/ficha
+    const wkMap = new Map();
     for(const [iso, vals] of Array.from(dayMap.entries())){
       const ws = weekStart(new Date(iso+"T00:00:00"));
       const we = weekEndFromStart(ws);
       const key = fmtISO(ws);
       let acc = wkMap.get(key);
-      if(!acc){ acc={sumIie:0, days:0, volume:0, sets:0, reps:0, ws:ws, we:we}; wkMap.set(key, acc); }
+      if(!acc){ acc={sumIie:0, days:0, volume:0, sets:0, reps:0, ws, we}; wkMap.set(key, acc); }
       acc.sumIie += vals.iie; acc.days += 1;
       acc.volume += vals.volume; acc.sets += vals.sets; acc.reps += vals.reps;
     }
     const weeks = Array.from(wkMap.entries()).sort((a,b)=> a[0].localeCompare(b[0]));
-    const labels = [];
-    const series = [];
-    const titles = [];
+    const labels = [], series = [], titles = [];
     let idx = 1;
-    for(const [key, v] of weeks){
+    for(const [, v] of weeks){
       labels.push("Sem " + (idx++));
-      series.push({ iie: v.days? v.sumIie / v.days : 0, volume: v.volume, sets: v.sets, reps: v.reps });
+      // Soma semanal (não mais média)
+      series.push({ iie: v.sumIie, volume: v.volume, sets: v.sets, reps: v.reps });
       titles.push(`${toBR(fmtISO(v.ws))} — ${toBR(fmtISO(v.we))}`);
     }
     const tot = series.reduce((o,s)=>({iie:o.iie+s.iie, vol:o.vol+s.volume, sets:o.sets+s.sets, reps:o.reps+s.reps}), {iie:0,vol:0,sets:0,reps:0});
     const delta = (series.length>1)? Math.round(((series.at(-1).iie - series[0].iie)/Math.max(1e-6, series[0].iie))*100) : 0;
     window.__chartsWeekTitles = titles;
     return { labels, series, tot, delta };
-}
+  }
 
   let chart;
-  function renderChart(labels, series){
-    const elEmpty = document.getElementById('chartsEmpty');
+  function renderChart(labels, series, tot, delta){
+    const elEmpty  = document.getElementById('chartsEmpty');
+    const elSummary= document.getElementById('chartsSummary');
     const ctx = document.getElementById('chartsCanvas');
     if(chart){ chart.destroy(); chart=null; }
-    if(!labels.length){ elEmpty.style.display=''; return; } else { elEmpty.style.display='none'; }
-    const data = series.map(s=> s.iie);
-    const titles = window.__chartsWeekTitles;
+
+    if(!labels.length){
+      elEmpty.style.display=''; elSummary.style.display='none'; return;
+    }
+    elEmpty.style.display='none';
+
+    // Atualiza estatísticas resumidas
+    if(elSummary){
+      elSummary.style.display='block';
+      const arrow = delta > 0 ? '↑' : delta < 0 ? '↓' : '→';
+      const color = delta > 0 ? '#4ade80' : delta < 0 ? '#f87171' : '#a3a3a3';
+      document.getElementById('sumDelta').innerHTML = `<span style="color:${color}">${arrow} ${Math.abs(delta)}%</span>`;
+      const vol = tot.vol >= 1000 ? `${(tot.vol/1000).toFixed(1)}t` : `${Math.round(tot.vol)}kg`;
+      document.getElementById('sumVol').textContent = vol;
+      document.getElementById('sumSets').textContent = tot.sets;
+      document.getElementById('sumReps').textContent = tot.reps;
+    }
+
+    const iieData  = series.map(s=> +s.iie.toFixed(4));
+    const trendData = movingAvg(iieData);
+    const titles   = window.__chartsWeekTitles;
 
     chart = new Chart(ctx, {
       type:'line',
-      data:{ labels, datasets:[{label:'IIE', data, borderWidth:2, tension:.25, pointRadius:4, pointHoverRadius:5, borderColor:'#ff3b30', backgroundColor:'rgba(255,59,48,.2)'}]},
+      data:{
+        labels,
+        datasets:[
+          {
+            label:'IIE',
+            data: iieData,
+            borderWidth:2, tension:.25, pointRadius:4, pointHoverRadius:6,
+            borderColor:'#ff3b30', backgroundColor:'rgba(255,59,48,.15)',
+            fill: true, order: 2
+          },
+          {
+            label:'Tendência',
+            data: trendData,
+            borderWidth:2, tension:.4, pointRadius:0, pointHoverRadius:0,
+            borderColor:'rgba(255,200,0,.6)', backgroundColor:'transparent',
+            borderDash:[5,4], fill: false, order: 1
+          }
+        ]
+      },
       options:{
-        responsive:true, maintainAspectRatio:false, interaction:{mode:'index', intersect:false},
+        responsive:true, maintainAspectRatio:false,
+        interaction:{mode:'index', intersect:false},
         plugins:{
-          legend:{display:false},
+          legend:{ display: true, labels:{ color:'#eaeaea', boxWidth:12, font:{size:11} } },
           tooltip:{
             enabled:true,
             callbacks:{
@@ -1408,11 +1527,21 @@ root.render(<App/>);
                 const i = items && items.length? items[0].dataIndex : 0;
                 return titles && titles[i] ? titles[i] : items[0].label;
               },
-              label:(item)=> `IIE: ${Number(item.raw).toFixed(3)}`
+              label:(item)=>{
+                if(item.datasetIndex === 1) return `Tendência: ${Number(item.raw).toFixed(3)}`;
+                const s = series[item.dataIndex];
+                const lines = [`IIE: ${Number(item.raw).toFixed(3)}`];
+                if(s.volume > 0) lines.push(`Volume: ${Math.round(s.volume)}kg`);
+                lines.push(`Séries: ${s.sets}  ·  Reps: ${s.reps}`);
+                return lines;
+              }
             }
           }
         },
-        scales:{ x:{ ticks:{ maxRotation:0, autoSkip:true } }, y:{ beginAtZero:true } }
+        scales:{
+          x:{ ticks:{ color:'#a3a3a3', maxRotation:0, autoSkip:true }, grid:{ color:'rgba(255,255,255,.05)' } },
+          y:{ beginAtZero:true, ticks:{ color:'#a3a3a3' }, grid:{ color:'rgba(255,255,255,.05)' } }
+        }
       }
     });
   }
@@ -1427,7 +1556,7 @@ root.render(<App/>);
     function fillSubj(){
       const list = listSubjects(hist, typeSel.value);
       subjSel.innerHTML = '';
-      if(!list.length){ subjSel.innerHTML = '<option>Sem dados</option>'; renderChart([],[]); return; }
+      if(!list.length){ subjSel.innerHTML = '<option>Sem dados</option>'; renderChart([],[],{},{delta:0}); return; }
       for(const name of list){ const o=document.createElement('option'); o.value=name; o.textContent=name; subjSel.appendChild(o); }
       if(defaults && defaults.subject && list.includes(defaults.subject)) subjSel.value = defaults.subject;
     }
@@ -1435,8 +1564,8 @@ root.render(<App/>);
 
     let range = 'all';
     function plot(){
-      const {labels, series} = buildAgg(hist, typeSel.value, subjSel.value, range);
-      renderChart(labels, series);
+      const {labels, series, tot, delta} = buildAgg(hist, typeSel.value, subjSel.value, range);
+      renderChart(labels, series, tot, delta);
     }
     plot();
 
@@ -1445,7 +1574,6 @@ root.render(<App/>);
     pills.forEach(p=> p.onclick = ()=>{ pills.forEach(x=>x.classList.remove('active')); p.classList.add('active'); range=p.dataset.range; plot(); });
   }
 
-  // expose
   window.openChartsModal = function(defaultExerciseName){
     const el = document.getElementById('chartsModalBackdrop'); if(!el) return;
     el.style.display='flex';
@@ -1454,14 +1582,11 @@ root.render(<App/>);
   };
   window.closeChartsModal = function(){ const el = document.getElementById('chartsModalBackdrop'); if(el) el.style.display='none'; };
 
-  // bind header buttons
   document.getElementById('chartsCloseBtn')?.addEventListener('click', ()=> window.closeChartsModal());
   document.getElementById('chartsHelpBtn')?.addEventListener('click', ()=>{
-    const msg = 'IIE (Índice de Intensidade Efetiva) resume progresso levando em conta carga x repetições x séries ajustadas pelo RIR. '      +'No filtro "Músculo", os pontos representam a MÉDIA do IIE da semana. Use 7d/30d/90d/Tudo para mudar o intervalo.';
-    alert(msg);
+    alert('IIE (Índice de Intensidade Efetiva) = Volume × Fator RIR / 1000\n\nExercícios unilaterais têm fator ×2 (equivalência bilateral).\n\nA linha amarela tracejada é a tendência (média móvel de 3 pontos).\n\nMúsculo/Ficha: IIE somado por semana. Exercício: IIE diário.');
   });
 
-  // Auto-bind on any button/anchor with text "Gráfico"
   document.addEventListener('click', (ev)=>{
     const btn = ev.target.closest('button, a'); if(!btn) return;
     const t = (btn.innerText || btn.textContent || '').toLowerCase();
@@ -1476,6 +1601,7 @@ root.render(<App/>);
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
 <script>
 (function(){
   // ---- Helpers b64 ----
