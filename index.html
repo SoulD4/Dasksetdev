@@ -8,31 +8,67 @@
   <meta name="theme-color" content="#0b0b0b"/>
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon-512.png">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
-  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
-  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <script>
+    // Tailwind config must be defined before the CDN script loads
+    window.tailwind = window.tailwind || {};
     tailwind.config = { theme: { extend: {
       colors:{ bgDark:"#0b0b0b", cardDark:"#121212", cardSoft:"#181818", textMain:"#f1f1f1", textSub:"#a3a3a3", borderDark:"#2a2a2a", accent:"#e31b23", accent2:"#ff4d4f"}
     }}};
   </script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
-    /* Ocultar barra de rolagem horizontal (mobile/desktop) mantendo o scroll */
+    /* ===== CSS Variables para o tema dark ===== */
+    :root{
+      --color-bg: #0b0b0b;
+      --color-card: #121212;
+      --color-card-soft: #181818;
+      --color-text: #f1f1f1;
+      --color-text-sub: #a3a3a3;
+      --color-border: #2a2a2a;
+      --color-accent: #e31b23;
+      --color-accent2: #ff4d4f;
+      --ds-radius: 18px;
+    }
+
+    /* Fundo e texto base — garantido mesmo sem Tailwind processar */
+    html, body { background-color: var(--color-bg) !important; color: var(--color-text) !important; }
+    #root { background-color: var(--color-bg); min-height: 100vh; }
+
+    /* Sobrescreve classes Tailwind customizadas via CSS puro */
+    .bg-bgDark   { background-color: var(--color-bg) !important; }
+    .bg-cardDark { background-color: var(--color-card) !important; }
+    .bg-cardSoft { background-color: var(--color-card-soft) !important; }
+    .text-textMain { color: var(--color-text) !important; }
+    .text-textSub  { color: var(--color-text-sub) !important; }
+    .border-borderDark { border-color: var(--color-border) !important; }
+    .bg-accent   { background-color: var(--color-accent) !important; }
+    .text-accent { color: var(--color-accent) !important; }
+
+    /* Inputs e selects — tema escuro */
+    input, select, textarea {
+      background-color: rgba(0,0,0,0.3) !important;
+      color: var(--color-text) !important;
+      border-color: var(--color-border) !important;
+    }
+    input::placeholder { color: var(--color-text-sub) !important; }
+
+    /* Ocultar barra de rolagem horizontal mantendo scroll */
     nav.ds-nav{ overflow-x:auto; -webkit-overflow-scrolling: touch; gap:.5rem; scrollbar-width: none; }
     nav.ds-nav::-webkit-scrollbar{ display:none; }
     header.ds-hdr{ display:flex; align-items:center; justify-content:space-between; gap:.75rem; flex-wrap:wrap; }
     @media (max-width: 480px){ nav.ds-nav button{ flex:0 0 auto } }
     .modal-bg{ position:fixed; inset:0; background:rgba(0,0,0,.6); display:flex; align-items:center; justify-content:center; z-index:50 }
-      /* New UI polish */
-    :root{ --ds-radius: 18px; }
-    header.ds-hdr{ position: sticky; top: 0; z-index: 30; backdrop-filter: blur(8px); background: rgba(11,11,11,.72); border-bottom: 1px solid rgba(255,255,255,.04); padding: .6rem .5rem; border-radius: 0 0 16px 16px;}
-    .ds-card{ border-radius: var(--ds-radius); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02)); border: 1px solid var(--tw-prose-borders, #2a2a2a); box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.02); }
-    .ds-btn{ border-radius: 14px; padding: .65rem 1rem; font-weight: 600; }
+
+    header.ds-hdr{ position: sticky; top: 0; z-index: 30; backdrop-filter: blur(8px); background: rgba(11,11,11,.85) !important; border-bottom: 1px solid rgba(255,255,255,.06); padding: .6rem .5rem; border-radius: 0 0 16px 16px;}
+    .ds-card{ border-radius: var(--ds-radius); background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.02)); border: 1px solid #2a2a2a; box-shadow: 0 10px 30px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.02); }
+    .ds-btn{ border-radius: 14px; padding: .65rem 1rem; font-weight: 600; color: var(--color-text); }
     .ds-btn-primary{ background: linear-gradient(180deg, #e31b23, #b31217); border: 1px solid #8f0f13; color: #fff; }
     .ds-btn-primary:active{ transform: translateY(1px); }
-    .ds-btn-ghost{ background: rgba(255,255,255,.06); border: 1px solid #2a2a2a; }
+    .ds-btn-ghost{ background: rgba(255,255,255,.06); border: 1px solid #2a2a2a; color: var(--color-text); }
     .ds-shadow{ box-shadow: 0 8px 24px rgba(0,0,0,.35); }
     .safe-pb{ padding-bottom: max(env(safe-area-inset-bottom), 16px); }
     .safe-pt{ padding-top: max(env(safe-area-inset-top), 8px); }
@@ -40,20 +76,33 @@
       .grid-cols-mobile-1{ grid-template-columns: 1fr; }
     }
 
-  
-    /* Social sign-in buttons (white, with logo on the left and centered text) */
-    .ds-btn-social{ display:inline-flex; align-items:center; justify-content:center; gap:.6rem; border-radius:12px; border:1px solid #2a2a2a; background:#ffffff; color:#111; font-weight:700; padding:.7rem 1rem; box-shadow:0 1px 0 rgba(0,0,0,.35), 0 6px 20px rgba(0,0,0,.25); }
-    .ds-btn-social:active{ transform:translateY(1px); }
-    .ds-btn-social .ds-icon{ display:inline-flex; width:18px; height:18px; }
-    .ds-btn-social .ds-icon svg{ width:18px; height:18px; display:block; }
+    /* Cards e bordas gerais */
+    .rounded-2xl, .rounded-xl { color: inherit; }
+    .border { border-color: var(--color-border); }
 
-</style>
+    /* Modal */
+    .bg-cardDark { background-color: var(--color-card) !important; }
 
-<style>
-  /* Unified 'Entrar' button style (matches popup primary) */
-  .ds-enter{display:inline-flex;align-items:center;justify-content:center;background:#6e5bff;border:1px solid #7b6cff;color:#fff;border-radius:10px;padding:10px 12px;font-weight:700}
-</style>
-
+    /* Charts modal */
+    .charts-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
+    .charts-modal{width:min(980px,92vw);max-height:90vh;background:#0b0b0c;color:#eaeaea;border:1px solid #202025;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
+    .charts-hd{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #202025;background:linear-gradient(180deg,#0f0f11 0,#0b0b0c 100%)}
+    .charts-hd h3{font-size:16px;font-weight:700;margin:0}
+    .charts-help{width:30px;height:30px;border-radius:999px;background:#141418;border:1px solid #2b2b31;display:flex;align-items:center;justify-content:center;cursor:pointer}
+    .charts-body{padding:14px 16px;overflow:auto}
+    .charts-row{display:grid;grid-template-columns:1fr;gap:12px}
+    @media (min-width:700px){.charts-row{grid-template-columns:1fr 1fr}}
+    .charts-field{display:flex;flex-direction:column;gap:6px}
+    .charts-field label{font-size:12px;opacity:.85}
+    .charts-select{background:#111114 !important;color:#eaeaea !important;border:1px solid #28282c !important;border-radius:10px;padding:10px 12px;font-size:14px;outline:none}
+    .charts-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+    .charts-pill{background:#141418;border:1px solid #2b2b31;color:#eaeaea;border-radius:999px;padding:6px 10px;font-size:13px;cursor:pointer}
+    .charts-pill.active{background:#1f1f25;border-color:#3a3a42}
+    .charts-canvas-wrap{margin-top:14px;background:#0e0e12;border:1px solid #1f2024;border-radius:12px;padding:8px}
+    .charts-empty{padding:12px;border:1px dashed #2c2c31;border-radius:12px;text-align:center;opacity:.8;display:none}
+    .charts-actions{margin-left:auto}
+    .charts-btn{background:#1a1a1f;border:1px solid #2c2c31;color:#eaeaea;border-radius:10px;padding:8px 12px;font-size:14px;cursor:pointer}
+  </style>
 </head>
 <body class="bg-bgDark text-textMain min-h-screen overflow-x-hidden">
 <div id="root"></div>
@@ -73,9 +122,11 @@ const EXS=[
   // Peito
   E("Supino reto barra","Peito","Peitoral Medial","Barra"),
   E("Supino reto halteres","Peito","Peitoral Medial","Halteres"),
+  E("Supino reto Máquina","Peito","Peitoral Medial","Barra"),
   E("Supino inclinado barra","Peito","Peitoral Superior","Barra"),
   E("Supino inclinado com halter","Peito","Peitoral Superior","Halteres"),
   E("Supino inclinado máquina","Peito","Peitoral Superior","Máquina","iniciante"),
+  E("Supino inclinado Articulado","Peito","Peitoral Superior","Máquina","iniciante"),
   E("Crossover polia alta","Peito","Peitoral Inferior","Cabo/Crossover"),
   E("Crucifixo reto halteres","Peito","Peitoral Medial","Halteres","iniciante"),
   E("Crucifixo inclinado halteres","Peito","Peitoral Superior","Halteres","iniciante"),
@@ -105,11 +156,12 @@ const EXS=[
   E("Puxada alta unilateral","Costas","Dorsal (Lats)","Cabo/Crossover"),
   E("Remada baixa polia","Costas","Romboides/Trapézio Médio","Cabo/Crossover"),
   E("Remada baixa aberta polia","Costas","Romboides/Trapézio Médio","Cabo/Crossover"),
-  E("Puxada aberta polia alta","Costas","Dorsal (Lats)","Cabo/Crossover"),
+  E("Puxada alta aberta","Costas","Dorsal (Lats)","Cabo/Crossover"),
   E("Puxada triângulo","Costas","Dorsal (Lats)","Cabo/Crossover"),
   E("Pulldown","Costas","Dorsal (Lats)","Cabo/Crossover","iniciante"),
   E("Remada baixa unilateral","Costas","Romboides/Trapézio Médio","Cabo/Crossover"),
   E("Remada cavalinho","Costas","Romboides/Trapézio Médio","Barra"),
+  E("Remada serrote","Costas","Romboides", "Halteres","iniciante"),
   E("Hiperextensão lombar","Lombar","Lombar","Peso corporal","iniciante"),
 
   // Bíceps
@@ -137,6 +189,7 @@ const EXS=[
   E("Leg press 45°","Quadríceps","", "Máquina"),
   E("Leg 180° unilateral","Quadríceps","", "Máquina"),
   E("Cadeira extensora","Quadríceps","", "Máquina","iniciante"),
+  E("Cadeira extensora unilateral","Quadríceps","", "Máquina","iniciante"),
   E("Passada avançada halteres","Quadríceps","", "Halteres"),
 
   // Posterior de Coxa (sem subgrupos)
@@ -147,6 +200,7 @@ const EXS=[
   E("Flexora unilateral em pé","Posterior de Coxa","", "Máquina"),
   E("Stiff","Posterior de Coxa","", "Barra"),
   E("Stiff com halteres","Posterior de Coxa","", "Halteres"),
+  E("Levantamento Terra","Posterior de Coxa","", "Barra"),
 
   // Glúteo (com porções)
   E("Elevação pélvica com barra","Glúteo","Glúteo Máximo","Barra"),
@@ -165,6 +219,8 @@ const EXS=[
   // Abdômen
   E("Abdômen infra","Abdômen","Infra","Peso corporal","iniciante"),
   E("Abdômen supra","Abdômen","Supra","Peso corporal","iniciante"),
+  E("Abdômen supra declinado","Abdômen","Supra","Peso corporal","avançado"),
+  E("Abdômen infra na Paralela","Abdômen","Infra","Peso corporal","avançado"),
   E("Prancha isométrica","Abdômen","Estático","Peso corporal","iniciante"),
 
   // Antebraço
@@ -288,9 +344,6 @@ const PreviewBox=({label="Execução do exercício", onClick, disabled})=>{
 };
 // Home
 const Home=({goto,plans,history,prefs})=>{
-  const [authUser,setAuthUser]=useState(()=>{ try{return JSON.parse(localStorage.getItem('darkset.user'));}catch(_){return null;} });
-  useEffect(()=>{ const id=setInterval(()=>{ try{ setAuthUser(JSON.parse(localStorage.getItem('darkset.user'))); }catch(_){} }, 800); return ()=>clearInterval(id); },[]);
-
   const active=plans.list.find(p=>p.id===plans.activeId)||null;
   const entries=Object.entries(history);
   const thisWeek=(()=>{const now=new Date();const start=new Date(now);start.setDate(now.getDate()-now.getDay()+1);return entries.filter(([iso])=>new Date(iso)>=start).length;})();
@@ -308,24 +361,15 @@ const Home=({goto,plans,history,prefs})=>{
         {active? (<div className="flex items-center justify-between"><div className="font-medium">{active.name}</div><Button onClick={()=>goto('builder',active.id)} variant="ghost">Editar</Button></div>)
         :(<div className="flex items-center justify-between"><div className="text-textSub">Nenhuma ficha ativa.</div><Button onClick={()=>goto('plans')} variant="ghost">Criar agora</Button></div>)}
       </Card>
-      <Card title={authUser ? "Perfil rápido" : "Acesso"}>
-  {authUser ? (<div className="flex items-center justify-between">
-      <div className="flex items-center gap-2">
-        <div className="text-2xl">{prefs.avatar}</div>
-        <div className="text-sm text-textSub">{prefs.name || "Sem nome"}</div>
-      </div>
-      <Button onClick={()=>goto('profile')} variant="ghost">Editar perfil</Button>
-    </div>
-  ) : (
-    <div className="flex items-center justify-between flex-wrap gap-2">
-      <div className="text-sm text-textSub">Entre para salvar seu progresso na nuvem.</div>
-      <div className="flex gap-2 w-full sm:w-auto justify-end">
-        <Button full variant="accent" onClick={()=>goto('profile')}>Entrar</Button>
-        <Button full variant="ghost" onClick={()=>goto('profile')}>Criar conta</Button>
-      </div>
-    </div>
-  )}
-</Card>
+      <Card title="Perfil rápido">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="text-2xl">{prefs.avatar}</div>
+            <div className="text-sm text-textSub">{prefs.name || "Sem nome"}</div>
+          </div>
+          <Button onClick={()=>goto('profile')} variant="ghost">Editar perfil</Button>
+        </div>
+      </Card>
     </div>
   );
 };
@@ -347,7 +391,7 @@ const Plans=({plans,setPlans,goto,setToast})=>{
   // generate import link
   const makeImportLink=(pl)=>{
     const payload = { name: pl.name, byDay: pl.byDay };
-    const raw = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(payload)))));
+    const raw = encodeURIComponent(btoa(encodeURIComponent(JSON.stringify(payload)).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p))));
     return `${location.origin}${location.pathname}?import=${raw}`;
   };
 
@@ -410,6 +454,34 @@ const Plans=({plans,setPlans,goto,setToast})=>{
 };
 
 // Builder
+const BuilderExRow = ({ex, canAdd, onAdd, openInline, onToggleInline}) => {
+  const [setsCount, setSetsCount] = useState(3);
+  return (
+    <div className="flex flex-col sm:flex-row items-center gap-3 border border-borderDark rounded-xl p-3">
+      <div className="w-full sm:w-28">
+        {ex.media?.srcGif ? (
+          <div className="relative w-full rounded-2xl overflow-hidden border border-borderDark bg-black">
+            <img src={ex.media.srcGif} alt={ex.name} className="w-full h-auto"/>
+          </div>
+        ) : (
+          <div className="relative w-full rounded-2xl border border-borderDark overflow-hidden">
+            <div className="pt-[56.25%] bg-black/30"></div>
+            <div className="absolute inset-0 flex items-center justify-center text-textSub text-xs">Prévia</div>
+          </div>
+        )}
+      </div>
+      <div className="flex-1 w-full">
+        <div className="font-medium break-words">{ex.name}</div>
+        <div className="text-xs text-textSub">{ex.primary} • {ex.subgroup||"—"} • {ex.equipment} • {ex.difficulty}</div>
+      </div>
+      <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+        <label className="text-xs text-textSub">Séries</label>
+        <input type="number" min="1" max="10" value={setsCount} onChange={e=>setSetsCount(Math.max(1,Math.min(10,Number(e.target.value)||1)))} className="border border-borderDark bg-black/30 rounded-xl w-16 px-2 py-1 text-sm"/>
+        <Button variant="ghost" onClick={()=>{ if(canAdd){ onAdd(ex, setsCount); } }} disabled={!canAdd}>Adicionar</Button>
+      </div>
+    </div>
+  );
+};
 const Builder=({planId,plans,setPlans,setToast})=>{
   const plan=plans.list.find(p=>p.id===planId)||plans.list[0];
   const [day,setDay]=useState(DAYS[0]);
@@ -480,29 +552,14 @@ const Builder=({planId,plans,setPlans,setToast})=>{
             </div>
             <div className="space-y-2 max-h-80 overflow-auto pr-1">
               {list.map(ex=>(
-                <div key={ex.id} className="flex flex-col sm:flex-row items-center gap-3 border border-borderDark rounded-xl p-3">
-                  <div className="w-full sm:w-28">
-                    {ex.media?.srcGif ? (
-                      <div className="relative w-full rounded-2xl overflow-hidden border border-borderDark bg-black">
-                        <img src={ex.media.srcGif} alt={ex.name} className="w-full h-auto"/>
-                      </div>
-                    ) : (
-                      <div className="relative w-full rounded-2xl border border-borderDark overflow-hidden">
-                        <div className="pt-[56.25%] bg-black/30"></div>
-                        <div className="absolute inset-0 flex items-center justify-center text-textSub text-xs">Prévia</div>
-                      </div>
-                    )}
-                  </div>
-                  <div className="flex-1 w-full">
-                    <div className="font-medium break-words">{ex.name}</div>
-                    <div className="text-xs text-textSub">{ex.primary} • {ex.subgroup||"—"} • {ex.equipment} • {ex.difficulty}</div>
-                  </div>
-                  <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
-                    <label className="text-xs text-textSub">Séries</label>
-                    <input type="number" min="1" max="10" defaultValue="3" className="border border-borderDark bg-black/30 rounded-xl w-16 px-2 py-1 text-sm"/>
-                    <Button variant="ghost" onClick={(ev)=>{const sets=ev.target.parentElement.querySelector('input').value; if(canAdd(ex)){ addEx(ex,sets);} }} disabled={!canAdd(ex)}>Adicionar</Button>
-                  </div>
-                </div>
+                <BuilderExRow
+                  key={ex.id}
+                  ex={ex}
+                  canAdd={canAdd(ex)}
+                  onAdd={addEx}
+                  openInline={openInline[ex.id]}
+                  onToggleInline={()=>openVideo(ex)}
+                />
               ))}
               {list.length===0 && <div className="text-sm text-textSub">Nenhum exercício encontrado para os filtros.</div>}
             </div>
@@ -530,7 +587,7 @@ const Builder=({planId,plans,setPlans,setToast})=>{
           </div>
         </div>
       </Card>
-      {false && videoEx && (
+      {videoEx && (
         <Modal onClose={()=>setVideoEx(null)}>
           <div className="flex items-start justify-between mb-2">
             <div>
@@ -712,13 +769,18 @@ const DarkTimer = ({prefs}) => {
     try{ localStorage.removeItem(STORAGE_KEY); }catch(_){}
   };
 
+  const fmtTime = (s) => {
+    const m = Math.floor(s / 60);
+    const ss = s % 60;
+    return m > 0 ? `${m}:${String(ss).padStart(2,'0')}` : `${s}s`;
+  };
   const presets=[30,60,90,120,150,180];
   return (
     <div className="border border-borderDark rounded-2xl p-3 grid gap-2 bg-cardDark/70">
       <div className="flex items-start justify-between gap-3">
         <div className="flex flex-col">
           <div className="font-semibold">DarkTimer</div>
-          <div className="text-2xl font-semibold tabular-nums mt-1">{sec}s</div>
+          <div className="text-2xl font-semibold tabular-nums mt-1">{fmtTime(sec)}</div>
         </div>
         <div className="flex gap-2">
           <Button onClick={reset}>Reset</Button>
@@ -727,7 +789,7 @@ const DarkTimer = ({prefs}) => {
       </div>
       <div className="flex flex-wrap gap-2">
         {presets.map(p=>(
-          <button key={p} onClick={()=>{ if(!running){ setSec(p); try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({active:false, pausedSec:p})); }catch(_){} } }} className={"px-3 py-1.5 rounded-full border border-borderDark "+(sec===p?"bg-white/10":"")}>{p}s</button>
+          <button key={p} onClick={()=>{ if(!running){ setSec(p); try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({active:false, pausedSec:p})); }catch(_){} } }} className={"px-3 py-1.5 rounded-full border border-borderDark "+(sec===p?"bg-white/10":"")}>{fmtTime(p)}</button>
         ))}
       </div>
     </div>
@@ -741,7 +803,7 @@ const Session=({plans,history,setHistory,prefs,goto,setToast})=>{
   const [started,setStarted]=useState(false);
   const [day,setDay]=useState(DAYS[(new Date().getDay()||7)-1]);
   const [cursor,setCursor]=useState(0);
-  const planItems=activePlan? activePlan.byDay[day]:[];
+  const planItems=activePlan?.byDay?.[day]||[];
   const [sets,setSets]=useState([]);
   const [rir,setRir]=useState([]);
   const [savedSnap,setSavedSnap]=useState({});
@@ -820,8 +882,7 @@ const Session=({plans,history,setHistory,prefs,goto,setToast})=>{
         <div>
           <div className="text-sm text-textSub">Exercício {cursor+1} de {planItems.length}</div>
           <div className="font-semibold text-lg">{current.name}</div>
-          {false && <div className="text-xs text-textSub mt-1">Última: {lastPerf.sets.map((s,i)=>`S${i+1} ${s.w||"-"}kg×${s.r||"-"}${s.rir?` (RIR ${s.rir})`:""}`).join(" | ")}</div>}
-        </div>
+                  </div>
         <Button variant="ghost" onClick={back}>Voltar p/ iniciar</Button>
       </div>
 
@@ -893,7 +954,7 @@ const Session=({plans,history,setHistory,prefs,goto,setToast})=>{
 
 
 // History (cards compact + modal details)
-const History=({history, prefs})=>{
+const History=({history, setHistory, prefs})=>{
   const [weekday,setWeekday]=useState("");
   const [planFilter,setPlanFilter]=useState("");
   const [detail,setDetail]=useState(null); // {date,obj}
@@ -903,6 +964,10 @@ const History=({history, prefs})=>{
   const filtered=entries.filter(([_,o])=>(!weekday||o.day===weekday)&&(!planFilter||o.planName===planFilter));
   const planOptions=[...new Set(entries.map(([,o])=>o.planName).filter(Boolean))];
   const chartsEnabled = !!prefs.chartsPremium;
+  const deleteEntry = (date) => {
+    if(!confirm(`Excluir o treino de ${toBR(date)}?`)) return;
+    setHistory(prev => { const copy = {...prev}; delete copy[date]; return copy; });
+  };
 
   const parseNum = (v)=>{ const n = parseFloat(String(v).replace(",", ".")); return isFinite(n)? n : 0; };
   const volSets = (sets)=> sets.reduce((acc,s)=> acc + (parseNum(s.w)*parseNum(s.r)), 0);
@@ -939,7 +1004,10 @@ const History=({history, prefs})=>{
                       <div className="font-semibold">{toBR(date)} — {obj.planName||"Sem ficha"}</div>
                       <div className="text-xs text-textSub">{obj.entries.length} exercício(s)</div>
                     </div>
-                    <div className="text-xs text-textSub">Vol: {vol}</div>
+                    <div className="flex flex-col items-end gap-1">
+                      <div className="text-xs text-textSub">Vol: {vol}</div>
+                      <button onClick={e=>{e.stopPropagation();deleteEntry(date);}} className="text-xs text-red-500 hover:text-red-400 px-2 py-0.5 rounded-lg border border-red-900/40 hover:bg-red-900/20 transition">Excluir</button>
+                    </div>
                   </div>
                 </button>
               );
@@ -982,7 +1050,6 @@ const History=({history, prefs})=>{
 };
 // Profile (local)
 
-
 const Profile=({prefs,setPrefs})=>{
   const [name,setName]=useState(prefs.name);
   const [avatar,setAvatar]=useState(prefs.avatar);
@@ -995,23 +1062,9 @@ const Profile=({prefs,setPrefs})=>{
   const [chartsPremium,setChartsPremium]=useState(!!prefs.chartsPremium);
   const dirty = (name!==prefs.name) || (avatar!==prefs.avatar) || (unit!==prefs.unit) || (vibrate!==prefs.vibrate) || (goal!==prefs.weeklyGoal) || ((showTimer)!==(prefs.showTimer!==false)) || ((Number(timerPreset||0))!==(Number(prefs.timerPreset||60))) || ((Number(rir))!==(Number((typeof prefs.rirDefault==="number"? prefs.rirDefault : 2)))) || (chartsPremium!==!!prefs.chartsPremium);
 
-  const [authUser,setAuthUser]=useState(()=>{ try{return JSON.parse(localStorage.getItem('darkset.user'));}catch(_){return null;} });
-  useEffect(()=>{
-    const id = setInterval(()=>{
-      try{ setAuthUser(JSON.parse(localStorage.getItem('darkset.user'))); }catch(_){}
-    }, 800);
-    return ()=> clearInterval(id);
-  },[]);
-
-  // Email auth fields (optional)
-  const [em,setEm] = useState("");
-  const [pw,setPw] = useState("");
-  const [nm,setNm] = useState("");
-
   return (
     <div className="grid gap-4">
-      {authUser && (
-<Card title="Perfil">
+      <Card title="Perfil">
         <div className="grid gap-3">
           <div className="flex flex-wrap items-center gap-3">
             <div className="text-4xl">{avatar}</div>
@@ -1060,58 +1113,12 @@ const Profile=({prefs,setPrefs})=>{
           <div><Button variant="accent" disabled={!dirty} onClick={()=>setPrefs({name,avatar,unit,vibrate,weeklyGoal:goal,showTimer,timerPreset,rirDefault:rir,chartsPremium})}>Salvar perfil</Button></div>
         </div>
       </Card>
-)}
-
-      <Card title="Conta">
-        {authUser ? (
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="text-sm text-textSub">
-              Conectado como <b>{authUser.displayName || authUser.email || authUser.uid}</b><br/>
-              <span className="opacity-80">uid:</span> <span className="font-mono text-xs">{authUser.uid}</span>
-            </div>
-            <div className="flex gap-2">
-              <Button onClick={()=> window.DSAuth && window.DSAuth.signOut()}>Sair</Button>
-            </div>
-          </div>) : (
-          <div className="grid gap-3">
-            <div className="text-sm text-textSub">Entre para salvar seu progresso na nuvem.</div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              <button className="ds-btn-social" onClick={()=> window.DSAuth && window.DSAuth.signInGoogle()}>
-                <span className="ds-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <path fill="#4285F4" d="M23.5 12.27c0-.84-.07-1.45-.22-2.09H12.22v3.8h6.42c-.13 1.01-.83 2.53-2.39 3.55l-.02.13 3.47 2.69.24.02c2.19-2.02 3.46-4.99 3.46-8.1z"/>
-  <path fill="#34A853" d="M12.22 23.5c3.14 0 5.77-1.03 7.69-2.82l-3.66-2.83c-.98.67-2.31 1.14-4.03 1.14-3.08 0-5.68-2.02-6.61-4.82l-.12.01-3.58 2.77-.05.11C2.83 21 7.19 23.5 12.22 23.5z"/>
-  <path fill="#FBBC05" d="M5.61 14.17c-.24-.73-.38-1.52-.38-2.35 0-.82.14-1.61.37-2.35l-.01-.16-3.62-2.8-.12.06C.75 8.26.22 10.06.22 11.82c0 1.76.53 3.56 1.63 5.25l3.76-2.9z"/>
-  <path fill="#EA4335" d="M12.22 4.64c2.18 0 3.64.94 4.48 1.72l3.26-3.18C17.98 1.2 15.36.14 12.22.14 7.19.14 2.83 2.63.75 6.4l3.84 2.98C5.52 7.58 8.12 4.64 12.22 4.64z"/>
-</svg></span>
-                <span>Entrar com Google</span>
-              </button>
-              <button className="ds-btn-social" onClick={()=> alert('Login com Apple em breve')}>
-                <span className="ds-icon"><svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-  <path fill="currentColor" d="M16.365 1.43c0 1.14-.46 2.106-1.102 2.82-.705.77-1.866 1.36-2.93 1.29-.133-1.087.54-2.246 1.155-2.922.734-.792 1.976-1.35 2.877-1.49zM20.5 17.02c-.437.982-.64 1.415-1.2 2.286-.78 1.186-1.882 2.667-3.246 2.683-1.216.024-1.532-.796-3.19-.79-1.659.006-2.01.81-3.226.796-1.365-.014-2.41-1.347-3.19-2.532-2.194-3.329-2.428-7.234-1.071-9.3.96-1.478 2.479-2.349 3.917-2.349 1.454 0 2.371.8 3.574.8 1.18 0 1.9-.8 3.575-.8 1.295 0 2.667.705 3.626 1.92-3.19 1.74-2.671 6.283-.469 7.286z"/>
-</svg></span>
-                <span>Entrar com Apple</span>
-              </button>
-            </div>
-            <div className="border border-borderDark rounded-xl p-3 grid gap-2">
-              <div className="text-sm font-medium">Email/telefone + senha</div>
-              <input className="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Email ou telefone" value={em} onChange={e=>setEm(e.target.value)}/>
-              <input type="password" className="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Senha" value={pw} onChange={e=>setPw(e.target.value)}/>
-              <div className="flex gap-2">
-                <Button onClick={()=> window.DSAuth && window.DSAuth.signUpEmail(em, pw, nm)}>Criar conta</Button>
-                <Button onClick={()=> window.DSAuth && window.DSAuth.signInEmail(em, pw)}>Entrar</Button>
-              </div>
-            </div>
-          </div>
-)}
-      </Card>
-
       <Card>
         <div className="text-sm text-textSub">Fotos da galeria e pack de avatares ficam pro V4 (estrutura já preparada).</div>
       </Card>
     </div>
   );
 };
-
 
 function App(){
   const [screen,setScreen]=useState("home");
@@ -1124,26 +1131,39 @@ function App(){
   const goto=(s,id=null)=>{ setScreen(s); if(s==='builder' && id) setBuilderPlanId(id); if(s==='viewer' && id) setViewerPlanId(id); };
   useEffect(()=>{ if(toast){ const t=setTimeout(()=>setToast(null),1200); return ()=>clearTimeout(t);} },[toast]);
 
-  // Import via ?import=
+  // Import via ?import= na URL
   useEffect(()=>{
-    const params=new URLSearchParams(location.search);
-    const imp=params.get("import");
-    if(!imp) return;
-    try{
-      const txt=decodeURIComponent(imp);
-      const json=JSON.parse(decodeURIComponent(escape(atob(txt))));
-      // open modal to confirm add
+    const doImport = (json) => {
       const days=Object.entries(json.byDay||{}).map(([d,arr])=>`${d}: ${arr.length}`).join(" | ");
       const ok = confirm(`Ficha encontrada: ${json.name}\n${days}\n\nAdicionar ao seu DarkSet?`);
       if(ok){
         const id=Date.now();
         setPlans(p=>({...p,list:[...p.list,{id,name:json.name,byDay:json.byDay||{}}]}));
         setToast("Ficha importada");
-        window.history.replaceState({}, "", location.pathname); // clean param
+        window.history.replaceState({}, "", location.pathname);
       }
-    }catch(e){
-      alert("Link de importação inválido.");
+    };
+
+    // Verifica ?import= na URL
+    const params=new URLSearchParams(location.search);
+    const imp=params.get("import");
+    if(imp){
+      try{
+        const json=JSON.parse(decodeURIComponent(atob(imp).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+        doImport(json);
+      }catch(e){ alert("Link de importação inválido."); }
     }
+
+    // Verifica import pendente do Firebase (?id=)
+    if(window.__pendingImport){
+      doImport(window.__pendingImport);
+      window.__pendingImport = null;
+    }
+
+    // Escuta evento disparado pelo Firebase handler
+    const handler = (e) => doImport(e.detail);
+    window.addEventListener('darkset:import', handler);
+    return () => window.removeEventListener('darkset:import', handler);
   },[]);
 
   return (
@@ -1164,27 +1184,30 @@ function App(){
       {screen==="plans" && <Plans plans={plans} setPlans={setPlans} goto={(s,id)=>goto(s,id)} setToast={setToast}/>}
       {screen==="builder" && <Builder planId={builderPlanId || (plans.activeId || plans.list[0]?.id)} plans={plans} setPlans={setPlans} setToast={setToast}/>}
       {screen==="session" && <Session plans={plans} setHistory={setHistory} history={history} prefs={prefs} goto={goto} setToast={setToast}/>}
-      {screen==="history" && <History history={history} prefs={prefs}/>}
+      {screen==="history" && <History history={history} setHistory={setHistory} prefs={prefs}/>}
       {screen==="viewer" && <Viewer planId={(viewerPlanId || (plans.activeId || plans.list[0]?.id))} plans={plans} goto={goto}/>}
       {screen==="profile" && <Profile prefs={prefs} setPrefs={setPrefs}/>}
 
-      <footer className="mt-8 text-center text-xs text-textSub">© <span id="yr"></span> DarkSet — V4.7.5</footer>
+      <footer className="mt-8 text-center text-xs text-textSub">© {new Date().getFullYear()} DarkSet — V4.7.5</footer>
       {toast && <Toast text={toast}/>}
     </div>
   );
 }
 const root=ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App/>);
-(()=>{const y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear();})();
+
 </script>
 
 <script>
   // PWA: registra service worker (requer HTTPS ou localhost)
   if ('serviceWorker' in navigator) {
     window.addEventListener('load', function() {
-      navigator.serviceWorker.register('service-worker.js').catch(function(e){
-        console.warn('SW registration failed', e);
-      });
+      // Only register if running from a real server (not file://) and SW file likely exists
+      if (location.protocol !== 'file:') {
+        navigator.serviceWorker.register('service-worker.js').catch(function(e){
+          // SW file not found — silently ignore, PWA offline not available
+        });
+      }
     });
   }
 </script>
@@ -1192,26 +1215,6 @@ root.render(<App/>);
 <!-- ===== Modal de Gráficos (IIE) ===== -->
 <link rel="preload" as="script" href="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js">
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-<style>
-  .charts-modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:9999}
-  .charts-modal{width:min(980px,92vw);max-height:90vh;background:#0b0b0c;color:#eaeaea;border:1px solid #202025;border-radius:16px;overflow:hidden;display:flex;flex-direction:column}
-  .charts-hd{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid #202025;background:linear-gradient(180deg,#0f0f11 0,#0b0b0c 100%)}
-  .charts-hd h3{font-size:16px;font-weight:700;margin:0}
-  .charts-help{width:30px;height:30px;border-radius:999px;background:#141418;border:1px solid #2b2b31;display:flex;align-items:center;justify-content:center;cursor:pointer}
-  .charts-body{padding:14px 16px;overflow:auto}
-  .charts-row{display:grid;grid-template-columns:1fr;gap:12px}
-  @media (min-width:700px){.charts-row{grid-template-columns:1fr 1fr}}
-  .charts-field{display:flex;flex-direction:column;gap:6px}
-  .charts-field label{font-size:12px;opacity:.85}
-  .charts-select{background:#111114;color:#eaeaea;border:1px solid #28282c;border-radius:10px;padding:10px 12px;font-size:14px;outline:none}
-  .charts-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-  .charts-pill{background:#141418;border:1px solid #2b2b31;color:#eaeaea;border-radius:999px;padding:6px 10px;font-size:13px;cursor:pointer}
-  .charts-pill.active{background:#1f1f25;border-color:#3a3a42}
-  .charts-canvas-wrap{margin-top:14px;background:#0e0e12;border:1px solid #1f2024;border-radius:12px;padding:8px}
-  .charts-empty{padding:12px;border:1px dashed #2c2c31;border-radius:12px;text-align:center;opacity:.8;display:none}
-  .charts-actions{margin-left:auto}
-  .charts-btn{background:#1a1a1f;border:1px solid #2c2c31;color:#eaeaea;border-radius:10px;padding:8px 12px;font-size:14px;cursor:pointer}
-</style>
 <div id="chartsModalBackdrop" class="charts-modal-backdrop" aria-hidden="true">
   <div class="charts-modal" role="dialog" aria-modal="true" aria-label="Gráficos de treino">
     <div class="charts-hd">
@@ -1448,83 +1451,6 @@ root.render(<App/>);
 <!-- Firebase compat SDKs para encurtar link no Firestore -->
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script>
-(function(){
-  try{
-    var firebaseConfig = {
-      apiKey: "AIzaSyB3bu3XercwmnlV0jdaldoXvd5gnHfj0GU",
-      authDomain: "darkset-538d1.firebaseapp.com",
-      projectId: "darkset-538d1",
-      storageBucket: "darkset-538d1.firebasestorage.app",
-      messagingSenderId: "354165019689",
-      appId: "1:354165019689:web:dc458f0a61e26e6289f838",
-      measurementId: "G-PVJ7QJ0T7F"
-    };
-    if (window.firebase) {
-      if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
-      window._db = firebase.firestore();
-    }
-  }catch(e){ console.warn('Firebase init falhou', e); }
-
-  function b64ToJson(b64){
-    try { return JSON.parse(decodeURIComponent(escape(atob(b64)))); } catch(e){ return null; }
-  }
-  function jsonToB64(obj){
-    try { return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); } catch(e){ return ''; }
-  }
-
-  async function handleIdParam(){
-    try{
-      var url = new URL(location.href);
-      var id = url.searchParams.get('id');
-      if(!id) return;
-      if(!window._db){ console.warn('Firestore não pronto'); return; }
-      var snap = await window._db.collection('fichas').doc(id).get();
-      if(!snap.exists){ console.warn('share id não encontrado'); return; }
-      var data = snap.data() || {};
-      var payload = { 
-        name: data.name || data.title || "Importada", 
-        byDay: data.byDay || data.Semana || data.semana || {} 
-      };
-      url.searchParams.delete('id');
-      url.searchParams.set('import', jsonToB64(payload));
-      location.replace(url.toString());
-    }catch(e){ console.warn('handleIdParam erro', e); }
-  }
-
-  var shortenedOnce = false;
-  async function tryShortenCurrent(){
-    try{
-      if(shortenedOnce) return;
-      var inp = document.getElementById('share-link');
-      if(!inp) return;
-      var val = inp.value || '';
-      if(!val.includes('?import=')) return;
-      if(!window._db) return;
-      var b64 = (new URL(val, location.href)).searchParams.get('import');
-      var obj = b64ToJson(b64); if(!obj) return;
-      var addRes = await window._db.collection('fichas').add(Object.assign({}, obj, { ts: Date.now() }));
-      var shortUrl = location.origin + '/?id=' + addRes.id;
-      inp.value = shortUrl;
-      var qb = document.getElementById('qr-box');
-      if(qb && window.QRCode){ qb.innerHTML=''; new QRCode(qb, { text: shortUrl, width: 196, height: 196 }); }
-      shortenedOnce = true;
-    }catch(e){ console.warn('shortenCurrent erro', e); }
-  }
-
-  var obs = new MutationObserver(()=>{ tryShortenCurrent(); });
-  obs.observe(document.documentElement || document.body, { childList:true, subtree:true });
-
-  document.addEventListener('DOMContentLoaded', ()=>{ tryShortenCurrent(); handleIdParam(); });
-})();
-</script>
-
-
-<!-- DS_PATCH_FIRESTORE_ONLY -->
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 <script>
 (function(){ 
   // ---- Init Firebase (compat) ----
@@ -1542,8 +1468,16 @@ root.render(<App/>);
   }catch(e){ console.warn('Firebase init failed', e); }
 
   // ---- Helpers ----
-  function b64ToJson(b64){ try { return JSON.parse(decodeURIComponent(escape(atob(b64)))); } catch(e){ return null; } }
-  function jsonToB64(obj){ try { return btoa(unescape(encodeURIComponent(JSON.stringify(obj)))); } catch(e){ return ''; } }
+  function b64ToJson(b64){
+    try {
+      return JSON.parse(decodeURIComponent(atob(b64).split('').map(c=>'%'+('00'+c.charCodeAt(0).toString(16)).slice(-2)).join('')));
+    } catch(e){ return null; }
+  }
+  function jsonToB64(obj){
+    try {
+      return btoa(encodeURIComponent(JSON.stringify(obj)).replace(/%([0-9A-F]{2})/g,(_,p)=>String.fromCharCode('0x'+p)));
+    } catch(e){ return ''; }
+  }
 
   // ---- Handle open with ?id=... ----
   async function handleIdParam(){ 
@@ -1556,9 +1490,11 @@ root.render(<App/>);
       if(!snap.exists) return console.warn('share id not found');
       var data = snap.data() || {};
       var payload = { name: data.name || data.title || "Importada", byDay: data.byDay || data.Semana || data.semana || {} };
-      url.searchParams.delete('id');
-      url.searchParams.set('import', jsonToB64(payload));
-      location.replace(url.toString());
+      // Limpa a URL sem redirecionar (evita 404 no Netlify)
+      window.history.replaceState({}, '', location.pathname);
+      // Dispara o import diretamente via evento customizado
+      window.__pendingImport = payload;
+      window.dispatchEvent(new CustomEvent('darkset:import', { detail: payload }));
     }catch(e){ console.warn('handleIdParam error', e); }
   }
 
@@ -1597,636 +1533,15 @@ root.render(<App/>);
     }catch(e){ console.warn('fireStoreShorten error', e); }
   }
 
-  // Observe DOM mutations to catch when the share modal is inserted/updated
-  var mo = new MutationObserver(function(){ fireStoreShorten(); });
-  mo.observe(document.documentElement || document.body, { subtree: true, childList: true });
+  // Observe only the root element for share modal appearance - more targeted than document-wide
+  var mo = new MutationObserver(function(){
+    if(document.getElementById('share-link')) fireStoreShorten();
+  });
+  mo.observe(document.getElementById('root') || document.body, { subtree: true, childList: true });
 
   document.addEventListener('DOMContentLoaded', function(){ handleIdParam(); fireStoreShorten(); });
 })();
 </script>
 
-
-<script>
-/* DS_AUTH_START */
-(function(){
-  try{
-    if(!window.firebase) return;
-    if(!firebase.apps || !firebase.apps.length){
-      var firebaseConfig = {
-        apiKey: "AIzaSyB3bu3XercwmnlV0jdaldoXvd5gnHfj0GU",
-        authDomain: "darkset-538d1.firebaseapp.com",
-        projectId: "darkset-538d1",
-        storageBucket: "darkset-538d1.firebasestorage.app",
-        messagingSenderId: "354165019689",
-        appId: "1:354165019689:web:dc458f0a61e26e6289f838",
-        measurementId: "G-PVJ7QJ0T7F"
-      };
-      firebase.initializeApp(firebaseConfig);
-    }
-    var auth = firebase.auth();
-    var db   = window._db || (firebase.firestore && firebase.firestore());
-
-    // Expose helper API
-    window.DSAuth = {
-      signInGoogle: async function(){
-        try {
-          var provider = new firebase.auth.GoogleAuthProvider();
-          if (window.innerWidth > 640) {
-            await auth.signInWithPopup(provider);
-          } else {
-            await auth.signInWithRedirect(provider);
-          }
-        } catch(e) {
-          try {
-            await auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-          } catch(err) {
-            alert('Falha ao entrar com Google: ' + (e && e.message ? e.message : ''));
-          }
-        }
-      },
-      signOut: function(){ return auth.signOut(); },
-      signUpEmail: function(email, pass, name){
-        return auth.createUserWithEmailAndPassword(email, pass).then(function(cred){
-          if(name) return cred.user.updateProfile({ displayName: name });
-        });
-      },
-      signInEmail: function(email, pass){
-        return auth.signInWithEmailAndPassword(email, pass);
-      }
-    };
-
-    auth.onAuthStateChanged(async function(user){
-      try{
-        if(user){
-          var info = {
-            uid: user.uid,
-            email: user.email || null,
-            displayName: user.displayName || null,
-            photoURL: user.photoURL || null,
-            lastLogin: Date.now()
-          };
-          localStorage.setItem('darkset.user', JSON.stringify(info));
-          try{
-            if(db){
-              await db.collection('users').doc(user.uid).set({
-                email: info.email,
-                name: info.displayName,
-                photoURL: info.photoURL,
-                updatedAt: Date.now()
-              }, { merge: true });
-            }
-          }catch(_){}
-          try {
-            var prefs = JSON.parse(localStorage.getItem('darkset.v3.prefs')||'{}');
-            if(info.displayName && !prefs.name){
-              prefs.name = info.displayName;
-              localStorage.setItem('darkset.v3.prefs', JSON.stringify(prefs));
-            }
-          }catch(_){}
-        } else {
-          localStorage.removeItem('darkset.user');
-        }
-      }catch(_){}
-    });
-  }catch(e){ console.warn('DSAuth init error', e); }
-})();
-/* DS_AUTH_END */
-</script>
-
-
-<!-- === Auth Popup === -->
-<style>
-  .auth-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:center;justify-content:center;z-index:99999}
-  .auth-card{width:min(520px,92vw);background:#0b0b0c;border:1px solid #1f2024;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,.5);color:#eaeaea;overflow:hidden}
-  .auth-hd{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-bottom:1px solid #1f2024;background:linear-gradient(180deg,#0f0f11,#0b0b0c)}
-  .auth-title{font-weight:700;font-size:16px}
-  .auth-x{appearance:none;background:transparent;border:0;color:#a9a9b0;font-size:18px;cursor:pointer;line-height:1}
-  .auth-body{padding:14px 16px;display:grid;gap:10px}
-  .auth-social{display:flex;flex-direction:column;gap:8px}
-  .btn-social{display:flex;align-items:center;gap:10px;justify-content:center;background:#fff;color:#111;border:1px solid #e5e5e5;border-radius:10px;padding:10px 12px;font-weight:700;cursor:pointer}
-  .btn-social .ico{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center}
-  .btn-social .ico.g{background: none}
-  .btn-social .ico.a{background: none}
-  .auth-sep{height:1px;background:#1f2024;margin:2px 0}
-  .auth-field{display:flex;flex-direction:column;gap:6px}
-  .auth-input{background:#111114;border:1px solid #28282c;border-radius:10px;color:#eaeaea;padding:10px 12px;font-size:14px;outline:none}
-  .auth-primary{display:flex;gap:8px;justify-content:flex-end}
-  .auth-btn{background:#6e5bff;border:1px solid #7b6cff;color:#fff;border-radius:10px;padding:10px 12px;cursor:pointer;font-weight:700}
-  .auth-muted{font-size:12px;color:#a9a9b0;text-align:center}
-  .auth-muted button{background:none;border:0;color:#c7c7ff;text-decoration:underline;cursor:pointer}
-</style>
-
-
-<div id="authModalBackdrop" class="auth-backdrop" aria-hidden="true">
-  <div class="auth-card" role="dialog" aria-modal="true" aria-label="Autenticação">
-    <div class="auth-hd">
-      <div class="auth-title">Entrar</div>
-      <button class="auth-x" data-auth-close aria-label="Fechar">✕</button>
-    </div>
-    <div class="auth-body">
-      <div class="auth-social">
-        <button class="btn-social" data-auth-google>
-          <span class="ico g" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
-  <path fill="#4285F4" d="M23.5 12.27c0-.84-.07-1.45-.22-2.09H12.22v3.8h6.42c-.13 1.01-.83 2.53-2.39 3.55l-.02.13 3.47 2.69.24.02c2.19-2.02 3.46-4.99 3.46-8.1z"/>
-  <path fill="#34A853" d="M12.22 23.5c3.14 0 5.77-1.03 7.69-2.82l-3.66-2.83c-.98.67-2.31 1.14-4.03 1.14-3.08 0-5.68-2.02-6.61-4.82l-.12.01-3.58 2.77-.05.11C2.83 21 7.19 23.5 12.22 23.5z"/>
-  <path fill="#FBBC05" d="M5.61 14.17c-.24-.73-.38-1.52-.38-2.35 0-.82.14-1.61.37-2.35l-.01-.16-3.62-2.8-.12.06C.75 8.26.22 10.06.22 11.82c0 1.76.53 3.56 1.63 5.25l3.76-2.9z"/>
-  <path fill="#EA4335" d="M12.22 4.64c2.18 0 3.64.94 4.48 1.72l3.26-3.18C17.98 1.2 15.36.14 12.22.14 7.19.14 2.83 2.63.75 6.4l3.84 2.98C5.52 7.58 8.12 4.64 12.22 4.64z"/>
-</svg></span><span>Entrar com Google</span>
-        </button>
-        <button class="btn-social" data-auth-apple>
-          <span class="ico a" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
-  <path fill="black" d="M16.36 1.43c0 1.14-.46 2.1-1.1 2.82-.7.77-1.86 1.36-2.93 1.29-.13-1.09.54-2.25 1.15-2.92.73-.79 1.98-1.35 2.88-1.19zM20.5 17.02c-.44.98-.64 1.41-1.2 2.29-.78 1.19-1.88 2.67-3.25 2.69-1.22.02-1.53-.8-3.19-.79-1.66.01-2.01.81-3.23.79-1.37-.02-2.41-1.35-3.19-2.54-2.2-3.33-2.43-7.23-1.07-9.29.96-1.48 2.48-2.35 3.92-2.35 1.45 0 2.36.8 3.57.8 1.18 0 1.89-.8 3.57-.8 1.29 0 2.67.7 3.63 1.92-3.19 1.7-2.67 6.25-.46 7.26z"/>
-</svg></span><span>Entrar com Apple</span>
-        </button>
-      </div>
-      <div class="auth-sep"></div>
-      <div class="auth-field">
-        <label style="font-size:12px;opacity:.85">Email ou telefone</label>
-        <input class="auth-input" id="authEmailPhone" placeholder="email@exemplo.com ou (11) 99999‑9999" autocomplete="username" />
-      </div>
-      <div class="auth-field">
-        <label style="font-size:12px;opacity:.85">Senha</label>
-        <input class="auth-input" id="authPassword" type="password" placeholder="••••••••" autocomplete="current-password" />
-      </div>
-      <div class="auth-primary">
-        <button class="auth-btn" data-auth-primary>Entrar</button>
-      </div>
-      <div class="auth-muted">
-        Ainda não tem uma conta?
-        <button type="button" data-auth-toggle>Criar conta</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<script>
-(function(){
-  let mode = 'signIn';
-  const backdrop = document.getElementById('authModalBackdrop');
-  if(!backdrop) return;
-  const btnClose = backdrop.querySelector('[data-auth-close]');
-  const btnGoogle = backdrop.querySelector('[data-auth-google]');
-  const btnApple  = backdrop.querySelector('[data-auth-apple]');
-  const btnPrimary= backdrop.querySelector('[data-auth-primary]');
-  const btnToggle = backdrop.querySelector('[data-auth-toggle]');
-  const inputEmail= backdrop.querySelector('#authEmailPhone');
-  const inputPass = backdrop.querySelector('#authPassword');
-
-  function setMode(m){
-    mode = m;
-    const title = backdrop.querySelector('.auth-title');
-    const primary = backdrop.querySelector('[data-auth-primary]');
-    const muted = backdrop.querySelector('.auth-muted');
-    if(title) title.textContent = (mode==='signUp')? 'Criar conta' : 'Entrar';
-    if(primary) primary.textContent = (mode==='signUp')? 'Criar conta' : 'Entrar';
-    if(muted){
-      muted.innerHTML = (mode==='signUp')
-        ? 'Já tem uma conta? <button type="button" data-auth-toggle>Entrar</button>'
-        : 'Ainda não tem uma conta? <button type="button" data-auth-toggle>Criar conta</button>';
-      muted.querySelector('[data-auth-toggle]').addEventListener('click', ()=> setMode(mode==='signUp'?'signIn':'signUp'), {once:true});
-    }
-  }
-
-  function openAuthModal(m){ setMode(m||'signIn'); backdrop.style.display='flex'; }
-  function closeAuthModal(){ backdrop.style.display='none'; }
-  window.openAuthModal = openAuthModal;
-
-  btnClose && btnClose.addEventListener('click', closeAuthModal);
-  btnGoogle && btnGoogle.addEventListener('click', async ()=>{
-    try{ if(window.DSAuth && DSAuth.signInGoogle){ await DSAuth.signInGoogle(); closeAuthModal(); } }
-    catch(e){ alert(e && e.message ? e.message : String(e)); }
-  });
-  btnApple && btnApple.addEventListener('click', async ()=>{
-    try{
-      if(window.DSAuth && DSAuth.signInApple){ await DSAuth.signInApple(); closeAuthModal(); }
-      else { alert('Login com Apple indisponível neste dispositivo/navegador.'); }
-    }catch(e){ alert(e && e.message ? e.message : String(e)); }
-  });
-  btnPrimary && btnPrimary.addEventListener('click', async ()=>{
-    try{
-      const email = (inputEmail && inputEmail.value || '').trim();
-      const pass = (inputPass && inputPass.value || '').trim();
-      if(!email || !pass){ alert('Preencha email/telefone e senha.'); return; }
-      if(window.DSAuth){
-        if(mode==='signUp' && DSAuth.signUpEmail){ await DSAuth.signUpEmail(email, pass); }
-        else if(DSAuth.signInEmail){ await DSAuth.signInEmail(email, pass); }
-        closeAuthModal();
-      }
-    }catch(e){ alert(e && e.message ? e.message : String(e)); }
-  });
-  btnToggle && btnToggle.addEventListener('click', ()=> setMode(mode==='signUp'?'signIn':'signUp'));
-
-  // Auto-open once for first-time visitors without user
-  try{
-    const hasUser = !!JSON.parse(localStorage.getItem('darkset.user')||'null');
-    if(!hasUser){ setTimeout(()=> openAuthModal('signIn'), 400); }
-  }catch(_){}
-
-  // Turn the "Acesso" card buttons into popup triggers and hide big "Criar conta"
-  const obs = new MutationObserver(()=>{
-    document.querySelectorAll('.ds-card').forEach(card=>{
-      const title = card.querySelector('.font-semibold.text-lg');
-      if(!title) return;
-      if((title.textContent||'').trim() !== 'Acesso') return;
-      const btns = card.querySelectorAll('button');
-      btns.forEach(btn=>{
-      const label = (btn.textContent||'').trim().toLowerCase();
-      if(label === 'entrar'){
-        btn.onclick = ()=> openAuthModal('signIn');
-        // Make it look like the popup primary
-        btn.className = 'ds-enter';
-      }
-      if(label === 'criar conta'){
-          btn.style.display='none';
-          if(!card.querySelector('[data-inline-create]')){
-            const div = document.createElement('div');
-            div.setAttribute('data-inline-create','1');
-            div.className = 'w-full text-right text-xs';
-            div.style.opacity = '.8';
-            div.style.marginTop = '4px';
-            div.innerHTML = 'Ainda não tem uma conta? <a href="#" style="text-decoration:underline;color:#c7c7ff;cursor:pointer">Criar conta</a>';
-            div.querySelector('a').onclick = (ev)=>{ ev.preventDefault(); openAuthModal('signUp'); };
-            card.appendChild(div);
-          }
-        }
-      });
-    });
-  });
-  obs.observe(document.body, {subtree:true, childList:true});
-})();
-</script>
-
-
-<script>
-// Optional Apple provider (only works if Apple foi habilitado no Firebase)
-(function(){
-  if(!window.firebase || !firebase.auth) return;
-  if(!window.DSAuth) window.DSAuth = {};
-  if(!DSAuth.signInApple){
-    DSAuth.signInApple = async function(){
-      try{
-        const provider = new firebase.auth.OAuthProvider('apple.com');
-        provider.addScope('email'); provider.addScope('name');
-        try{ await firebase.auth().signInWithPopup(provider); }
-        catch(err){
-          if(err && err.code === 'auth/operation-not-supported-in-this-environment'){
-            await firebase.auth().signInWithRedirect(provider);
-          }else{ throw err; }
-        }
-      }catch(e){ alert(e && e.message ? e.message : String(e)); }
-    };
-  }
-})();
-</script>
-
-<!-- === /Auth Popup === -->
-
-<style>
-  /* fix: alinhamento do ícone do Google no popup */
-  .btn-social .ico svg { width:18px; height:18px; display:block; }
-</style>
-<script>
-(function(){
-  function openAuth(){ if(window.openAuthModal) openAuthModal('signIn'); }
-
-  function injectCreateLink(container){
-    if(!container || container.querySelector('[data-inline-create]')) return;
-    const div = document.createElement('div');
-    div.setAttribute('data-inline-create','1');
-    div.className = 'w-full text-right text-xs';
-    div.style.opacity = '.8';
-    div.style.marginTop = '4px';
-    div.innerHTML = 'Ainda não tem uma conta? <a href="#" style="text-decoration:underline;color:#c7c7ff;cursor:pointer">Criar conta</a>';
-    div.querySelector('a').onclick = function(ev){ ev.preventDefault(); ev.stopImmediatePropagation(); ev.stopPropagation(); if(window.openAuthModal) openAuthModal('signUp'); };
-    container.appendChild(div);
-  }
-
-  function styleEnter(btn){
-    if(!btn) return;
-    btn.className = 'ds-enter';
-  }
-
-  function wireEnter(btn){
-    if(!btn) return;
-    btn.addEventListener('click', function(ev){
-      ev.preventDefault();
-      ev.stopImmediatePropagation(); ev.stopPropagation();
-      ev.stopImmediatePropagation();
-      openAuth();
-    }, true);
-    btn.onclick = function(ev){ ev.preventDefault(); openAuth(); };
-  }
-
-  function tweak(){
-    document.querySelectorAll('.ds-card').forEach(function(card){
-      const titleEl = card.querySelector('.font-semibold.text-lg');
-      if(!titleEl) return;
-      const ttl = (titleEl.textContent||'').trim();
-
-      if(ttl === 'Acesso'){
-        const btns = card.querySelectorAll('button');
-        btns.forEach(function(b){
-          const label = (b.textContent||'').trim().toLowerCase();
-          if(label === 'entrar'){
-            styleEnter(b);
-            wireEnter(b);
-          }
-          if(label === 'criar conta'){
-            b.style.display = 'none';
-            injectCreateLink(card);
-          }
-        });
-      }
-
-      if(ttl === 'Conta'){
-        const formBox = card.querySelector('.border.border-borderDark.rounded-xl.p-3');
-        if(formBox){
-          const row = formBox.querySelector('.flex.gap-2');
-          if(row){
-            row.querySelectorAll('button').forEach(function(b){
-              const label = (b.textContent||'').trim().toLowerCase();
-              if(label === 'criar conta'){ b.style.display = 'none'; }
-              if(label === 'entrar'){ styleEnter(b); }
-            });
-          }
-          injectCreateLink(formBox);
-        }
-      }
-    });
-  }
-
-  const mo = new MutationObserver(function(){ tweak(); });
-  mo.observe(document.documentElement || document.body, { childList:true, subtree:true });
-  if(document.readyState === 'loading'){ document.addEventListener('DOMContentLoaded', tweak); } else { tweak(); }
-})();
-</script>
-
-<style>
-/* fix-google-icon: stronger alignment */
-.btn-social .ico{ line-height:0 !important; display:inline-flex !important; align-items:center !important; justify-content:center !important; }
-.btn-social .ico svg{ width:18px !important; height:18px !important; display:block !important; }
-</style>
-
-
-<!-- DarkSet Auto-Inject: Profile Inline Auth + SMS in Popup -->
-<script>
-(function(){
-  // Utility: wait for element
-  function waitFor(fn, timeout=8000, step=100){
-    return new Promise((resolve, reject)=>{
-      const t0 = Date.now();
-      (function loop(){
-        try{
-          const el = fn();
-          if (el) return resolve(el);
-          if (Date.now()-t0 > timeout) return reject(new Error('waitFor timeout'));
-        }catch(_){}
-        setTimeout(loop, step);
-      })();
-    });
-  }
-  function isNode(el){ return el && el.nodeType === 1; }
-
-  // ===== Inline Auth on Profile ("Conta") - no popup =====
-  function mountProfileInlineAuth(){
-    try{
-      // Find the Profile "Conta" card by title text
-      const cards = document.querySelectorAll('.ds-card');
-      let contaCard = null, titleEl = null;
-      cards.forEach(c=>{
-        const t = c.querySelector('.font-semibold, .text-lg, h3, .ds-card-title');
-        if(!t) return;
-        const txt = (t.textContent||'').trim().toLowerCase();
-        if (txt === 'conta') { contaCard = c; titleEl = t; }
-      });
-      if(!contaCard) return; // nothing to do
-
-      // If already logged in, don't replace UI
-      let user = null;
-      try { user = JSON.parse(localStorage.getItem('darkset.user')||'null'); } catch(_){}
-      if (user && user.uid) return;
-
-      // If we've already mounted once, skip
-      if (contaCard.querySelector('[data-inline-auth-root]')) return;
-
-      // Clear existing content inside the card body (but keep the title/header if present)
-      const body = contaCard.querySelector('.ds-card-body') || contaCard;
-      const root = document.createElement('div');
-      root.setAttribute('data-inline-auth-root','1');
-      root.className = 'grid gap-3';
-
-      root.innerHTML = `
-        <div class="text-sm text-textSub">Entre para salvar seu progresso na nuvem.</div>
-
-        <div class="grid gap-2 sm:grid-cols-2">
-          <button class="ds-btn-social" data-inline-google>
-            <span class="ds-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
-                <path fill="#4285F4" d="M23.5 12.27c0-.84-.07-1.45-.22-2.09H12.22v3.8h6.42c-.13 1.01-.83 2.53-2.39 3.55l-.02.13 3.47 2.69.24.02c2.19-2.02 3.46-4.99 3.46-8.1z"/>
-                <path fill="#34A853" d="M12.22 23.5c3.14 0 5.77-1.03 7.69-2.82l-3.66-2.83c-.98.67-2.31 1.14-4.03 1.14-3.08 0-5.68-2.02-6.61-4.82l-.12.01-3.58 2.77-.05.11C2.83 21 7.19 23.5 12.22 23.5z"/>
-                <path fill="#FBBC05" d="M5.61 14.17c-.24-.73-.38-1.52-.38-2.35 0-.82.14-1.61.37-2.35l-.01-.16-3.62-2.8-.12.06C.75 8.26.22 10.06.22 11.82c0 1.76.53 3.56 1.63 5.25l3.76-2.9z"/>
-                <path fill="#EA4335" d="M12.22 4.64c2.18 0 3.64.94 4.48 1.72l3.26-3.18C17.98 1.2 15.36.14 12.22.14 7.19.14 2.83 2.63.75 6.4l3.84 2.98C5.52 7.58 8.12 4.64 12.22 4.64z"/>
-              </svg>
-            </span>
-            <span>Entrar com Google</span>
-          </button>
-          <button class="ds-btn-social" data-inline-apple>
-            <span class="ds-icon">
-              <svg viewBox="0 0 24 24" width="18" height="18" xmlns="http://www.w3.org/2000/svg">
-                <path fill="currentColor" d="M16.365 1.43c0 1.14-.46 2.106-1.102 2.82-.705.77-1.866 1.36-2.93 1.29-.133-1.087.54-2.246 1.155-2.922.734-.792 1.976-1.35 2.877-1.49zM20.5 17.02c-.437.982-.64 1.415-1.2 2.286-.78 1.186-1.882 2.667-3.246 2.683-1.216.024-1.532-.796-3.19-.79-1.659.006-2.01.81-3.226.796-1.365-.014-2.41-1.347-3.19-2.532-2.194-3.329-2.428-7.234-1.071-9.3.96-1.478 2.479-2.349 3.917-2.349 1.454 0 2.371.8 3.574.8 1.18 0 1.9-.8 3.575-.8 1.295 0 2.667.705 3.626 1.92-3.19 1.74-2.671 6.283-.469 7.286z"/>
-              </svg>
-            </span>
-            <span>Entrar com Apple</span>
-          </button>
-        </div>
-
-        <div class="border border-borderDark rounded-xl p-3 grid gap-2">
-          <div class="flex items-center justify-between">
-            <div class="text-sm font-medium" data-inline-title>Entrar com email</div>
-            <button class="text-xs underline text-textSub" data-inline-toggle>Criar conta</button>
-          </div>
-          <div class="grid gap-2" data-inline-email-wrap>
-            <input class="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Email" data-inline-email />
-            <input type="password" class="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Senha" data-inline-pass />
-          </div>
-          <div class="grid gap-2" data-inline-signup-extra style="display:none">
-            <input class="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Seu nome (opcional)" data-inline-name />
-            <input type="password" class="border border-borderDark bg-black/30 rounded-xl px-3 py-2 w-full" placeholder="Confirmar senha" data-inline-pass2 />
-          </div>
-          <div class="flex gap-2 justify-end">
-            <button class="ds-btn" data-inline-primary>Entrar</button>
-          </div>
-          <div class="text-xs text-textSub">Para login por <b>telefone (SMS)</b>, use o botão <i>Entrar</i> da tela inicial para abrir o popup.</div>
-        </div>
-      `;
-
-      // Replace body content (keep title if present)
-      const container = body;
-      Array.from(container.children).forEach(ch => {
-        if (titleEl && ch === titleEl.parentElement) return; // keep header if structured like that
-      });
-      container.appendChild(root);
-
-      // Wire handlers
-      const $ = sel => root.querySelector(sel);
-      const btnGoogle = $('[data-inline-google]');
-      const btnApple  = $('[data-inline-apple]');
-      const btnToggle = $('[data-inline-toggle]');
-      const btnPrim   = $('[data-inline-primary]');
-      const title     = $('[data-inline-title]');
-      const wrapExtra = $('[data-inline-signup-extra]');
-      const inpEmail  = $('[data-inline-email]');
-      const inpPass   = $('[data-inline-pass]');
-      const inpPass2  = $('[data-inline-pass2]');
-      const inpName   = $('[data-inline-name]');
-      let mode = 'signIn';
-
-      function setMode(m){
-        mode = m;
-        if (title) title.textContent = (mode==='signUp') ? 'Criar conta com email' : 'Entrar com email';
-        if (btnToggle) btnToggle.textContent = (mode==='signUp') ? 'Já tem uma conta? Entrar' : 'Criar conta';
-        if (wrapExtra) wrapExtra.style.display = (mode==='signUp') ? 'grid' : 'none';
-        if (btnPrim) btnPrim.textContent = (mode==='signUp') ? 'Criar conta' : 'Entrar';
-      }
-
-      btnToggle && btnToggle.addEventListener('click', ()=> setMode(mode==='signUp'?'signIn':'signUp'));
-      btnGoogle && btnGoogle.addEventListener('click', async ()=>{
-        try{ if(window.DSAuth && DSAuth.signInGoogle){ await DSAuth.signInGoogle(); } else alert('Google indisponível'); }
-        catch(e){ alert(e && e.message ? e.message : String(e)); }
-      });
-      btnApple && btnApple.addEventListener('click', async ()=>{
-        try{ if(window.DSAuth && DSAuth.signInApple){ await DSAuth.signInApple(); } else alert('Apple indisponível'); }
-        catch(e){ alert(e && e.message ? e.message : String(e)); }
-      });
-      btnPrim && btnPrim.addEventListener('click', async ()=>{
-        try{
-          const email = (inpEmail && inpEmail.value || '').trim();
-          const pass  = (inpPass  && inpPass.value  || '').trim();
-          if(!email || !pass){ alert('Preencha email e senha.'); return; }
-          if(mode==='signUp'){
-            const pass2 = (inpPass2 && inpPass2.value || '').trim();
-            if(pass !== pass2){ alert('As senhas não conferem.'); return; }
-            const name = (inpName && inpName.value || '').trim() || undefined;
-            if(window.DSAuth && DSAuth.signUpEmail){ await DSAuth.signUpEmail(email, pass, name); }
-            else alert('Cadastro indisponível');
-          }else{
-            if(window.DSAuth && DSAuth.signInEmail){ await DSAuth.signInEmail(email, pass); }
-            else alert('Login indisponível');
-          }
-        }catch(e){ alert(e && e.message ? e.message : String(e)); }
-      });
-
-      setMode('signIn');
-    }catch(e){ console.warn('mountProfileInlineAuth error', e); }
-  }
-
-  // ===== Hook "Criar conta" (Home) para abrir popup em signUp =====
-  function hookHomeCreateOpensPopup(){
-    try{
-      document.querySelectorAll('button, a').forEach(b=>{
-        const t = (b.textContent||'').trim().toLowerCase();
-        if(t === 'criar conta'){
-          b.addEventListener('click', (ev)=>{
-            try{
-              if(window.openAuthModal){ ev.preventDefault(); window.openAuthModal('signUp'); }
-            }catch(_){}
-          }, {once:true});
-        }
-      });
-    }catch(e){ console.warn('hookHomeCreateOpensPopup', e); }
-  }
-
-  // ===== Inject SMS flow into popup =====
-  function injectSmsIntoPopup(){
-    const backdrop = document.getElementById('authModalBackdrop') || document.querySelector('.auth-modal-backdrop');
-    if(!backdrop) return;
-    const body = backdrop.querySelector('.auth-body') || backdrop;
-    if(!body) return;
-    if (body.querySelector('#authPhone')) return; // already injected
-
-    const sep = body.querySelector('.auth-sep') || body.lastElementChild;
-    const wrap = document.createElement('div');
-    wrap.innerHTML = `
-      <div class="auth-field">
-        <label style="font-size:12px;opacity:.85">Telefone (SMS)</label>
-        <input class="auth-input" id="authPhone" placeholder="+55 11 99999-9999" autocomplete="tel" />
-      </div>
-      <div class="auth-primary">
-        <button class="auth-btn" data-auth-sms-send>Enviar código</button>
-      </div>
-      <div class="auth-field" id="smsCodeWrap" style="display:none">
-        <label style="font-size:12px;opacity:.85">Código SMS</label>
-        <input class="auth-input" id="authSmsCode" inputmode="numeric" placeholder="123456" />
-      </div>
-      <div class="auth-primary" id="smsConfirmWrap" style="display:none">
-        <button class="auth-btn" data-auth-sms-verify>Confirmar código</button>
-      </div>
-      <div id="recaptcha-container" style="display:none"></div>
-    `;
-    body.insertBefore(wrap, sep);
-
-    // Handlers
-    let recaptcha = null, smsConfirm = null;
-    const inputPhone  = body.querySelector('#authPhone');
-    const codeWrap    = body.querySelector('#smsCodeWrap');
-    const confWrap    = body.querySelector('#smsConfirmWrap');
-    const inputCode   = body.querySelector('#authSmsCode');
-    const btnSend     = body.querySelector('[data-auth-sms-send]');
-    const btnVerify   = body.querySelector('[data-auth-sms-verify]');
-
-    function toE164(v){
-      v = (v||'').trim().replace(/[\s\-\(\)]/g, '');
-      if(v.startsWith('+')) return v;
-      if(/^\d+$/.test(v)){
-        if(v.startsWith('55')) return '+'+v;
-        return '+55'+v;
-      }
-      return v;
-    }
-    async function ensureRecaptcha(){
-      if(recaptcha) return recaptcha;
-      if(!window.firebase || !firebase.auth) throw new Error('Firebase Auth não disponível');
-      recaptcha = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size:'invisible' });
-      return recaptcha;
-    }
-    btnSend && btnSend.addEventListener('click', async ()=>{
-      try{
-        const phone = toE164(inputPhone && inputPhone.value);
-        if(!phone){ alert('Informe o telefone com DDD.'); return; }
-        const verifier = await ensureRecaptcha();
-        smsConfirm = await firebase.auth().signInWithPhoneNumber(phone, verifier);
-        if(codeWrap) codeWrap.style.display='grid';
-        if(confWrap) confWrap.style.display='flex';
-        alert('Código SMS enviado.');
-      }catch(e){
-        console.warn(e);
-        alert(e && e.message ? e.message : 'Falha ao enviar SMS.');
-        try{ const rid = await recaptcha.render(); if(window.grecaptcha && rid) window.grecaptcha.reset(rid); }catch(_){}
-      }
-    });
-    btnVerify && btnVerify.addEventListener('click', async ()=>{
-      try{
-        const code = (inputCode && inputCode.value || '').trim();
-        if(!code){ alert('Digite o código.'); return; }
-        await smsConfirm.confirm(code);
-        if(window.closeAuthModal) window.closeAuthModal();
-      }catch(e){ alert(e && e.message ? e.message : 'Código inválido.'); }
-    });
-  }
-
-  // Observe and apply when DOM changes
-  const mo = new MutationObserver(()=>{
-    try{
-      mountProfileInlineAuth();
-      hookHomeCreateOpensPopup();
-      injectSmsIntoPopup();
-    }catch(_){}
-  });
-  mo.observe(document.documentElement, {subtree:true, childList:true});
-  // Run once
-  try{ mountProfileInlineAuth(); hookHomeCreateOpensPopup(); injectSmsIntoPopup(); }catch(_){}
-})();
-</script>
-
-</body></html>
+</body>
+</html>
